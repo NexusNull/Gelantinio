@@ -46,7 +46,7 @@ public class CellAgent : Agent
             Vector3 mousePosition = PlayerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
             mousePosition.z = 0f;
             if (mousePosition.magnitude > 1) mousePosition.Normalize();
-            Debug.Log(mousePosition);
+            //Debug.Log(mousePosition);
             rBody.velocity = mousePosition * speed;
             //transform.position = transform.position + mousePosition * speed;
         }
