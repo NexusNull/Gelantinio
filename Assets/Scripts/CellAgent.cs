@@ -5,10 +5,12 @@ using MLAgents;
 
 public class CellAgent : Agent
 {
+    Camera playerCamera;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        playerCamera = this.gameObject.GetComponentInChildren<Camera>();
     }
 
     // Update is called once per frame
@@ -19,10 +21,22 @@ public class CellAgent : Agent
 
     public override void AgentAction(float[] vectorAction, string textAction) {
 
-        Vector3 controlSignal = new Vector3(vectorAction[0],
-                                            vectorAction[1],
-                                            0f);
-        if (controlSignal.magnitude > 1) controlSignal.Normalize();
-        transform.position = transform.position + controlSignal;
+        // If no brain exists the player may control the PlayerCell, otherwise the brains has the control
+        if (this.brain.name != "CellPlayerBrain") {
+
+            // has brain -> brain controls
+            Vector3 controlSignal = new Vector3(vectorAction[0],
+                                                vectorAction[1],
+                                                0f);
+            if (controlSignal.magnitude > 1) controlSignal.Normalize();
+            transform.position = transform.position + controlSignal;
+        } else {
+
+            // has no brain -> player controls via mouse
+            Vector3 controlSignal = Vector3.zero;
+            Vector3 mousePosition = playerCamera.ScreenToWorldPoint(Input.mousePosition);
+            mousePosition.z = 0f;
+            Debug.Log(mousePosition);
+        }
     }
 }
