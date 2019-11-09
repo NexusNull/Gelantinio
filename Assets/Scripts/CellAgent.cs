@@ -5,14 +5,15 @@ using MLAgents;
 
 public class CellAgent : Agent
 {
-    Camera playerCamera;
+    Camera PlayerCamera;
+	public float radius;
     public float speed;
     private Rigidbody2D rBody;
 
     // Start is called before the first frame update
     void Start()
     {
-        playerCamera = this.gameObject.GetComponentInChildren<Camera>();
+        PlayerCamera = this.gameObject.GetComponentInChildren<Camera>();
         rBody = this.gameObject.GetComponent<Rigidbody2D>();
     }
 
@@ -23,7 +24,12 @@ public class CellAgent : Agent
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
-
+		
+		//Sets Cell's size, speed and camera size according to it's radius
+		transform.localScale = new Vector3(radius*2, radius*2, 1);
+		speed = 3/Mathf.Pow(radius,0.5f);
+		PlayerCamera.orthographicSize = 10*radius;
+		
         // If no brain exists the player may control the PlayerCell, otherwise the brains has the control
         if (this.brain.name != "CellPlayerBrain") {
 
@@ -37,7 +43,7 @@ public class CellAgent : Agent
 
             // has no brain -> player controls via mouse
             Vector3 controlSignal = Vector3.zero;
-            Vector3 mousePosition = playerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
+            Vector3 mousePosition = PlayerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
             mousePosition.z = 0f;
             if (mousePosition.magnitude > 1) mousePosition.Normalize();
             Debug.Log(mousePosition);
