@@ -13,8 +13,10 @@ public class CellAgent : Agent
     // Start is called before the first frame update
     void Start()
     {
+
         PlayerCamera = this.gameObject.GetComponentInChildren<Camera>();
         rBody = this.gameObject.GetComponent<Rigidbody2D>();
+        rBody.freezeRotation = true;
     }
 
     // Update is called once per frame
