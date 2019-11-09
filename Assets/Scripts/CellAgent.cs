@@ -70,6 +70,6 @@ public class CellAgent : Agent
 	
 	//grows so, that the total volume stays the same
 	void grow(float mass) {
-		radius = Mathf.Sqrt(math*math + radius*radius);
+		radius = Mathf.Sqrt(mass*mass + radius*radius);
 	}
 }
