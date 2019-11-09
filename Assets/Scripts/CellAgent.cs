@@ -37,7 +37,7 @@ public class CellAgent : Agent
 
             // has no brain -> player controls via mouse
             Vector3 controlSignal = Vector3.zero;
-            Vector3 mousePosition = playerCamera.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mousePosition = playerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
             mousePosition.z = 0f;
             if (mousePosition.magnitude > 1) mousePosition.Normalize();
             Debug.Log(mousePosition);
