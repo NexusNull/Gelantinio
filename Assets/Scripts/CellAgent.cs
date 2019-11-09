@@ -6,11 +6,14 @@ using MLAgents;
 public class CellAgent : Agent
 {
     Camera playerCamera;
+    public float speed;
+    private Rigidbody2D rBody;
 
     // Start is called before the first frame update
     void Start()
     {
         playerCamera = this.gameObject.GetComponentInChildren<Camera>();
+        rBody = this.gameObject.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -25,18 +28,21 @@ public class CellAgent : Agent
         if (this.brain.name != "CellPlayerBrain") {
 
             // has brain -> brain controls
-            Vector3 controlSignal = new Vector3(vectorAction[0],
-                                                vectorAction[1],
-                                                0f);
+            Vector2 controlSignal = new Vector3(vectorAction[0],
+                                                vectorAction[1]);
             if (controlSignal.magnitude > 1) controlSignal.Normalize();
-            transform.position = transform.position + controlSignal;
+            rBody.AddForce(controlSignal);
+            // transform.position = transform.position + controlSignal * speed;
         } else {
 
             // has no brain -> player controls via mouse
             Vector3 controlSignal = Vector3.zero;
             Vector3 mousePosition = playerCamera.ScreenToWorldPoint(Input.mousePosition);
             mousePosition.z = 0f;
+            if (mousePosition.magnitude > 1) mousePosition.Normalize();
             Debug.Log(mousePosition);
+            rBody.AddForce(mousePosition);
+            //transform.position = transform.position + mousePosition * speed;
         }
     }
 }
