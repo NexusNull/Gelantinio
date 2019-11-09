@@ -41,7 +41,7 @@ public class CellAgent : Agent
             mousePosition.z = 0f;
             if (mousePosition.magnitude > 1) mousePosition.Normalize();
             Debug.Log(mousePosition);
-            rBody.AddForce(mousePosition);
+            rBody.velocity = mousePosition * speed;
             //transform.position = transform.position + mousePosition * speed;
         }
     }
