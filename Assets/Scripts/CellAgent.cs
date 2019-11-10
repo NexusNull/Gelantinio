@@ -52,6 +52,31 @@ public class CellAgent : Agent
             //transform.position = transform.position + mousePosition * speed;
         }
     }
+	
+	//Input Vector for the ml-agents neural network
+	public override void CollectObservations(){
+		AddVectorObs(radius);
+		Vector3 food = findClosestFood();
+		float xDist = transform.position.x - food.x;
+		float yDist = transform.position.y - food.y;
+		AddVectorObs(xDist);
+		AddVectorObs(yDist);
+	}
+	
+	//Returns position of the closest 
+	Vector3 findClosestFood(){
+		GameObject[] allFood = GameObject.FindGameObjectsWithTag("Food");
+		float smallestDistance = Mathf.Infinity;
+		Vector3 closestPosition = new Vector3(0,0,0);
+		foreach (GameObject food in allFood){
+			float distance = Vector3.Distance(food.transform.position, transform.position);
+			if(distance < smallestDistance){
+				smallestDistance = distance;
+				closestPosition = food.transform.position;
+			}
+		}
+		return closestPosition;
+	}
 
     public override void AgentAction(float[] vectorAction, string textAction) {
 				
@@ -85,7 +110,7 @@ public class CellAgent : Agent
             
     }
 
-    // Work in progress
+    // Work in progress, to be extended when adding other cells
     public void swallow(/*smaller cell*/) {
 		float otherRadius = 0f; // Radius of the swallowed cell or growthSpeed if swallowing food.
 		grow(otherRadius);
