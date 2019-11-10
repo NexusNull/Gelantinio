@@ -9,24 +9,34 @@ public class MapManager : MonoBehaviour
     [SerializeField] public int ySize = 200;
     [SerializeField] public GameObject backgroundPrefab = default;
     [SerializeField] public GameObject backgroundContainer = default;
+	[SerializeField] public GameObject foodPrefab = default;
+	[SerializeField] public GameObject foodContainer = default;	
     [SerializeField] public GameObject wall = default;
+	
     // Start is called before the first frame update
     void Start()
     {
         setupMapBackground();
-        setupMapBorder();
+		setupMapBorder();
+		//Spawns 200 Food at the beginning of the game
+		for(int i = 0; i < 200; i++){
+			spawnFood();
+		}
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-    }
 
+    }
+	
+	//Creates a food object and places it in a random position
     private void spawnFood()
     {
-
-
+		float x = Random.Range(-1*(float)xSize/2, (float)xSize/2);
+		float y = Random.Range(-1*(float)ySize/2, (float)ySize/2);
+		Instantiate(foodPrefab, foodContainer.transform);
+		foodPrefab.transform.position = new Vector3(x ,y ,0f);
     }
 
     private void setupMapBackground()

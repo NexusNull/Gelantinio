@@ -5,9 +5,9 @@ using MLAgents;
 
 public class CellAgent : Agent
 {
+	[SerializeField] public float radius = 0.5f;
     Camera PlayerCamera;
-	public float radius;
-    public float speed;
+    float speed;
     private Rigidbody2D rBody;
 
     // Start is called before the first frame update
