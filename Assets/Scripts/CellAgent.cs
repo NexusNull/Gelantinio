@@ -5,31 +5,41 @@ using MLAgents;
 
 public class CellAgent : Agent
 {
-	[SerializeField] public float radius = 0.5f;
+	public float startRadius;
+    public float radius;
     Camera PlayerCamera;
-    float speed;
+    public float maxSpeed;
+    public float minSpeed;
+    private float speed;
     private Rigidbody2D rBody;
+    public float growthSpeed;
 
     // Start is called before the first frame update
-    void Start()
-    {
-
+    void Start() {
         PlayerCamera = this.gameObject.GetComponentInChildren<Camera>();
         rBody = this.gameObject.GetComponent<Rigidbody2D>();
         rBody.freezeRotation = true;
+        radius = startRadius;
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         //Sets Cell's size, speed and camera size according to it's radius
-        transform.localScale = new Vector3(radius * 2, radius * 2, 1);
-        speed = 8 / Mathf.Pow(radius, 0.1f);
+        transform.localScale = new Vector3(radius * 2, radius * 2, 1f);
+
+        if(Mathf.Abs(radius - startRadius) >= 0.01f) {
+            // This expression is maxSpeed at startRadius and converges against maxSpeed - minSpeed 
+            // (need to be fixed, so it does converge agains minSpeed) with growing radius
+            speed = -(minSpeed * Mathf.Pow(radius - startRadius, 2f) / (Mathf.Pow(radius - startRadius, 2f) + 16*(radius - startRadius)) ) + maxSpeed;
+        } else {
+            // If radius == startRadius the expression is not defined, so we need to set it to maxSpeed manually then
+            speed = maxSpeed;
+        }
+
         PlayerCamera.orthographicSize = 10 * radius;
 
         // has no brain -> player controls via mouse
-        if (!this.brain)
-        {
+        if (!this.brain) {
 
             Vector3 controlSignal = Vector3.zero;
             Vector3 mousePosition = PlayerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
@@ -66,17 +76,18 @@ public class CellAgent : Agent
     {
         if (collision.gameObject.tag == "Food")
         {
-            grow(0.1f);
+            grow(growthSpeed);
             Destroy(collision.gameObject);
         }
     }
-    //Work in Progress
+
+    // Work in progress
     public void swallow(/*smaller cell*/) {
-		float r = 0f;//Radius of the Swallowed cell or 0.1 if swallowing food.
-		grow(r);
+		float otherRadius = 0f; // Radius of the swallowed cell or growthSpeed if swallowing food.
+		grow(otherRadius);
 	}
 	
-	//grows so, that the total volume stays the same
+	// Grows so, that the total volume stays the same
 	void grow(float mass) {
 		radius = Mathf.Sqrt(mass*mass + radius*radius);
 	}
