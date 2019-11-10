@@ -61,4 +61,15 @@ public class CellAgent : Agent
         }
 
     }
+	
+	//Work in Progress
+	public void swallow(/*smaller cell*/) {
+		float r = 0f;//Radius of the Swallowed cell or 0.1 if swallowing food.
+		grow(r);
+	}
+	
+	//grows so, that the total volume stays the same
+	void grow(float mass) {
+		radius = Mathf.Sqrt(mass*mass + radius*radius);
+	}
 }
