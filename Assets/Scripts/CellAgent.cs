@@ -24,7 +24,7 @@ public class CellAgent : Agent
     {
         //Sets Cell's size, speed and camera size according to it's radius
         transform.localScale = new Vector3(radius * 2, radius * 2, 1);
-        speed = 3 / Mathf.Pow(radius, 0.5f);
+        speed = 8 / Mathf.Pow(radius, 0.1f);
         PlayerCamera.orthographicSize = 10 * radius;
 
         // has no brain -> player controls via mouse
