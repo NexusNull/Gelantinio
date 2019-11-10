@@ -9,10 +9,12 @@ public class MapManager : MonoBehaviour
     [SerializeField] public int ySize = 200;
     [SerializeField] public GameObject backgroundPrefab = default;
     [SerializeField] public GameObject backgroundContainer = default;
+    [SerializeField] public GameObject wall = default;
     // Start is called before the first frame update
     void Start()
     {
         setupMapBackground();
+        setupMapBorder();
     }
 
     // Update is called once per frame
@@ -42,16 +44,30 @@ public class MapManager : MonoBehaviour
 
             }
         }
+    }
+
+    private void setupMapBorder()
+    {
+        PolygonCollider2D collider = wall.GetComponent<PolygonCollider2D>();
 
 
 
-        Debug.Log(size);
-
+        collider.SetPath(0, new Vector2[] {
+            new Vector2(-(xSize / 2 + 1),  (ySize / 2 + 1)),
+            new Vector2( (xSize / 2 + 1),  (ySize / 2 + 1)),
+            new Vector2( (xSize / 2 + 1), -(ySize / 2 + 1)),
+            new Vector2(-(xSize / 2 + 1), -(ySize / 2 + 1))
+        });
+        collider.SetPath(1, new Vector2[] {
+            new Vector2(-(xSize / 2),  (ySize / 2)),
+            new Vector2( (xSize / 2),  (ySize / 2)),
+            new Vector2( (xSize / 2), -(ySize / 2)),
+            new Vector2(-(xSize / 2), -(ySize / 2))
+        });
 
 
 
     }
-
 
 
 }
