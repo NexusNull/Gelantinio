@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6599273586833814416}
   - component: {fileID: 6599273586833814418}
   - component: {fileID: 6599273586833814419}
+  - component: {fileID: 7576904705297404961}
   m_Layer: 0
   m_Name: PlayerCell(agent)
   m_TagString: Untagged
@@ -125,7 +126,23 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
+--- !u!58 &7576904705297404961
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6599273586833814415}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
 --- !u!1 &6599273586892904572
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,7 +154,6 @@ GameObject:
   - component: {fileID: 6599273586892904576}
   - component: {fileID: 6599273586892904575}
   - component: {fileID: 6599273586892904573}
-  - component: {fileID: 6599273586892904574}
   m_Layer: 0
   m_Name: PlayerCamera
   m_TagString: MainCamera
@@ -210,19 +226,3 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6599273586892904572}
   m_Enabled: 1
---- !u!58 &6599273586892904574
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6599273586892904572}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.75
