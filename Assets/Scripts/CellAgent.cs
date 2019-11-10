@@ -13,6 +13,7 @@ public class CellAgent : Agent
     private float speed;
     private Rigidbody2D rBody;
     public float growthSpeed;
+	private GameObject map;
 
     // Start is called before the first frame update
     void Start() {
@@ -20,6 +21,7 @@ public class CellAgent : Agent
         rBody = this.gameObject.GetComponent<Rigidbody2D>();
         rBody.freezeRotation = true;
         radius = startRadius;
+		map = GameObject.Find("Map");
     }
 
     // Update is called once per frame
@@ -52,31 +54,6 @@ public class CellAgent : Agent
             //transform.position = transform.position + mousePosition * speed;
         }
     }
-	
-	//Input Vector for the ml-agents neural network
-	public override void CollectObservations(){
-		AddVectorObs(radius);
-		Vector3 food = findClosestFood();
-		float xDist = transform.position.x - food.x;
-		float yDist = transform.position.y - food.y;
-		AddVectorObs(xDist);
-		AddVectorObs(yDist);
-	}
-	
-	//Returns position of the closest 
-	Vector3 findClosestFood(){
-		GameObject[] allFood = GameObject.FindGameObjectsWithTag("Food");
-		float smallestDistance = Mathf.Infinity;
-		Vector3 closestPosition = new Vector3(0,0,0);
-		foreach (GameObject food in allFood){
-			float distance = Vector3.Distance(food.transform.position, transform.position);
-			if(distance < smallestDistance){
-				smallestDistance = distance;
-				closestPosition = food.transform.position;
-			}
-		}
-		return closestPosition;
-	}
 
     public override void AgentAction(float[] vectorAction, string textAction) {
 				
@@ -96,13 +73,47 @@ public class CellAgent : Agent
         }
 
     }
+	
+	//Input Vector for the ml-agents neural network
+	public override void CollectObservations(){
+		AddVectorObs(radius);
+		Vector3 food = findClosestFood();
+		float xDist = transform.position.x - food.x;
+		float yDist = transform.position.y - food.y;
+		AddVectorObs(xDist);
+		AddVectorObs(yDist);
+		/*Physics.Raycast(transform.position, new Vector(1,0,0));
+		Physics.Raycast(transform.position, new Vector(1,1,0));
+		Physics.Raycast(transform.position, new Vector(0,1,0));
+		Physics.Raycast(transform.position, new Vector(-1,1,0));
+		Physics.Raycast(transform.position, new Vector(-1,0,0));
+		Physics.Raycast(transform.position, new Vector(-1,-1,0));
+		Physics.Raycast(transform.position, new Vector(0,-1,0));
+		Physics.Raycast(transform.position, new Vector(1,-1,0));*/	
+	}
+	
+	//Returns position of the closest 
+	Vector3 findClosestFood(){
+		GameObject[] allFood = GameObject.FindGameObjectsWithTag("Food");
+		float smallestDistance = Mathf.Infinity;
+		Vector3 closestPosition = new Vector3(0,0,0);
+		foreach (GameObject food in allFood){
+			float distance = Vector3.Distance(food.transform.position, transform.position);
+			if(distance < smallestDistance){
+				smallestDistance = distance;
+				closestPosition = food.transform.position;
+			}
+		}
+		return closestPosition;
+	}
+	
+	
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Food")
         {
             grow(growthSpeed);
-            GameObject map = GameObject.Find("Map");
             int x = map.GetComponent<MapManager>().xSize;
             int y = map.GetComponent<MapManager>().ySize;
             collision.gameObject.GetComponent<Transform>().position = new Vector2(Random.Range(-1 * (float)x / 2 + 1, (float)x / 2), Random.Range(-1 * (float)y / 2 + 1, (float)y / 2));
