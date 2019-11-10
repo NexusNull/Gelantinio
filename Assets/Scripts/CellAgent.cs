@@ -57,10 +57,7 @@ public class CellAgent : Agent
 	public override void CollectObservations(){
 		AddVectorObs(radius);
 		Vector3 food = findClosestFood();
-		float xDist = transform.position.x - food.x;
-		float yDist = transform.position.y - food.y;
-		AddVectorObs(xDist);
-		AddVectorObs(yDist);
+		AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
 	}
 	
 	//Returns position of the closest 
