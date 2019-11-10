@@ -77,8 +77,12 @@ public class CellAgent : Agent
         if (collision.gameObject.tag == "Food")
         {
             grow(growthSpeed);
-            Destroy(collision.gameObject);
+            GameObject map = GameObject.Find("Map");
+            int x = map.GetComponent<MapManager>().xSize;
+            int y = map.GetComponent<MapManager>().ySize;
+            collision.gameObject.GetComponent<Transform>().position = new Vector2(Random.Range(-1 * (float)x / 2 + 1, (float)x / 2), Random.Range(-1 * (float)y / 2 + 1, (float)y / 2));
         }
+            
     }
 
     // Work in progress
