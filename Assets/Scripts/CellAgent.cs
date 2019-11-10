@@ -61,9 +61,18 @@ public class CellAgent : Agent
         }
 
     }
-	
-	//Work in Progress
-	public void swallow(/*smaller cell*/) {
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Food")
+        {
+            grow(0.1f);
+            Destroy(collision.gameObject);
+        }
+    }
+
+    //Work in Progress
+    public void swallow(/*smaller cell*/) {
 		float r = 0f;//Radius of the Swallowed cell or 0.1 if swallowing food.
 		grow(r);
 	}
