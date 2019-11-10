@@ -70,7 +70,6 @@ public class CellAgent : Agent
             Destroy(collision.gameObject);
         }
     }
-
     //Work in Progress
     public void swallow(/*smaller cell*/) {
 		float r = 0f;//Radius of the Swallowed cell or 0.1 if swallowing food.
