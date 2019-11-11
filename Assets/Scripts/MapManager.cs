@@ -19,7 +19,7 @@ public class MapManager : MonoBehaviour
         setupMapBackground();
 		setupMapBorder();
 		//Spawns 200 Food at the beginning of the game
-		for(int i = 0; i < 200; i++){
+		for(int i = 0; i < maxFood; i++){
 			spawnFood();
 		}
     }

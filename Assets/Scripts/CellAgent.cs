@@ -79,14 +79,30 @@ public class CellAgent : Agent
 		AddVectorObs(radius);
 		Vector3 food = findClosestFood();
 		AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
-        /*Physics.Raycast(transform.position, new Vector(1,0,0));
-		Physics.Raycast(transform.position, new Vector(1,1,0));
-		Physics.Raycast(transform.position, new Vector(0,1,0));
-		Physics.Raycast(transform.position, new Vector(-1,1,0));
-		Physics.Raycast(transform.position, new Vector(-1,0,0));
-		Physics.Raycast(transform.position, new Vector(-1,-1,0));
-		Physics.Raycast(transform.position, new Vector(0,-1,0));
-		Physics.Raycast(transform.position, new Vector(1,-1,0));*/
+		RaycastHit Right;
+		RaycastHit ForwardRight;
+		RaycastHit Forward;
+		RaycastHit ForwardLeft;
+		RaycastHit Left;
+		RaycastHit BackwardLeft;
+		RaycastHit Backward;
+		RaycastHit BackwardRight;
+		Physics.Raycast(transform.position, new Vector3(1,0,0), out Right);
+		Physics.Raycast(transform.position, new Vector3(1,1,0), out ForwardRight);
+		Physics.Raycast(transform.position, new Vector3(0,1,0), out Forward);
+		Physics.Raycast(transform.position, new Vector3(-1,1,0), out ForwardLeft);
+		Physics.Raycast(transform.position, new Vector3(-1,0,0), out Left);
+		Physics.Raycast(transform.position, new Vector3(-1,-1,0), out BackwardLeft);
+		Physics.Raycast(transform.position, new Vector3(0,-1,0), out Backward);
+		Physics.Raycast(transform.position, new Vector3(1,-1,0), out BackwardRight);
+		AddVectorObs(Right.distance);
+		AddVectorObs(ForwardRight.distance);
+		AddVectorObs(Forward.distance);
+		AddVectorObs(ForwardLeft.distance);
+		AddVectorObs(Left.distance);
+		AddVectorObs(BackwardLeft.distance);
+		AddVectorObs(Backward.distance);
+		AddVectorObs(BackwardRight.distance);
 	}
 	
 	//Returns position of the closest 
