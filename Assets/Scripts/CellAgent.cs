@@ -14,6 +14,7 @@ public class CellAgent : Agent
     private Rigidbody2D rBody;
     public float growthSpeed;
 	private GameObject map;
+    private MapManager mapManager;
 
     // Start is called before the first frame update
     void Start() {
@@ -21,7 +22,7 @@ public class CellAgent : Agent
         rBody = this.gameObject.GetComponent<Rigidbody2D>();
         rBody.freezeRotation = true;
         radius = startRadius;
-		map = GameObject.Find("Map");
+		mapManager = GameObject.Find("Map").GetComponent<MapManager>();
     }
 
     // Update is called once per frame
@@ -90,10 +91,10 @@ public class CellAgent : Agent
 	}
 	
 	//Returns position of the closest 
-	Vector3 findClosestFood(){
+	Vector3 findClosestFood() {
 		GameObject[] allFood = GameObject.FindGameObjectsWithTag("Food");
 		float smallestDistance = Mathf.Infinity;
-		Vector3 closestPosition = new Vector3(0,0,0);
+		Vector3 closestPosition = Vector3.zero;
 		foreach (GameObject food in allFood){
 			float distance = Vector3.Distance(food.transform.position, transform.position);
 			if(distance < smallestDistance){
@@ -104,16 +105,12 @@ public class CellAgent : Agent
 		return closestPosition;
 	}
 	
-	
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "Food")
-        {
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.tag == "Food") {
             grow(growthSpeed);
-            int x = map.GetComponent<MapManager>().xSize;
-            int y = map.GetComponent<MapManager>().ySize;
-            collision.gameObject.GetComponent<Transform>().position = new Vector2(Random.Range(-1 * (float)x / 2 + 1, (float)x / 2), Random.Range(-1 * (float)y / 2 + 1, (float)y / 2));
+            int x = mapManager.xSize;
+            int y = mapManager.ySize;
+            collision.gameObject.GetComponent<Transform>().position = new Vector2(Random.Range(-(float)x / 2 + 1, (float)x / 2 - 1), Random.Range(-(float)y / 2 + 1, (float)y / 2 - 1));
         }
             
     }
