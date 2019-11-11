@@ -1,0 +1,211 @@
+<html>
+<head>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+<svg viewBox="0 0 1000 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+    <!-- Using g to inherit presentation attributes -->
+    <g id="interface" stroke="grey" stroke-width="1">
+    </g>
+    <g id="xunitsep" stroke="grey" stroke-width="1">
+    </g>
+    <g id="xsep" stroke="grey" stroke-width=".5">
+    </g>
+    <g id="yunitsep" stroke="grey" stroke-width="1">
+    </g>
+    <g id="ysep" stroke="grey" stroke-width=".5">
+    </g>
+    <g id="diasep" fill="grey" stroke="grey" stroke-width=".5" fill-opacity="0.4">
+    </g>
+    <g id="bottomText" fill="grey" stroke-width=".5">
+    </g>
+    <g id="left" fill="grey" stroke-width=".5" font-size="10px">
+    </g>
+    <g id="dennis" fill="magenta" stroke="magenta" stroke-width="1">
+    </g>
+    <g id="max" fill="blue" stroke="blue" stroke-width="1">
+    </g>
+    <g id="patric" fill="red"  stroke="red" stroke-width="1">
+    </g>
+    <g id="janik" fill="green"  stroke="green" stroke-width="1">
+    </g>
+    <g id="preparation" fill="black"  stroke="black" stroke-width="1">
+    </g>
+    <g id="rollerball" fill="grey"  stroke="grey" stroke-width="1">
+    </g>
+    <g id="micro-game" fill="grey"  stroke="red" stroke-width="1">
+    </g>
+    <g id="gelantinio" fill="purple"  stroke="purple" stroke-width="1">
+    </g>
+</svg>
+<script>
+    var xmlns = "http://www.w3.org/2000/svg";
+    let xOffset = 10;
+    let yOffset = 10;
+    let termine = [];
+    for (var i = 1; i < 32; i++) {
+        termine.push(i + ".10");
+    }
+
+    for(var i=1;i<19;i++){
+        termine.push(i+".11");
+    }
+
+    let amount = termine.length - 1;
+    let vertLength = 489;
+    let vertOffset = 10;
+    let horLength = 190;
+    let horOffset = 1;
+    {
+        let parent = document.getElementById("interface");
+        {
+            let elem = document.createElementNS(xmlns, "line");
+            elem.setAttribute("x1", 10 + xOffset);
+            elem.setAttribute("y1", 0 + yOffset);
+            elem.setAttribute("x2", 10 + xOffset);
+            elem.setAttribute("y2", 198 + yOffset);
+            parent.appendChild(elem);
+        }
+        {
+            let elem = document.createElementNS(xmlns, "line");
+            elem.setAttribute("x1", 2 + xOffset);
+            elem.setAttribute("y1", 190 + yOffset);
+            elem.setAttribute("x2", 500 + xOffset);
+            elem.setAttribute("y2", 190 + yOffset);
+            parent.appendChild(elem)
+        }
+        {
+            let elem = document.createElementNS(xmlns, "circle");
+            elem.setAttribute("cx", 10 + xOffset);
+            elem.setAttribute("cy", 0 + yOffset);
+            elem.setAttribute("r", 1);
+            parent.appendChild(elem)
+        }
+    }
+    {
+        // vertical separator
+
+        {
+            let parent = document.getElementById("xunitsep");
+            for (let i = 1; i < amount + 1; i++) {
+                let elem = document.createElementNS(xmlns, "line");
+                elem.setAttribute("x1", "" + (i * (vertLength / amount) + vertOffset + xOffset));
+                elem.setAttribute("y1", "" + (190 + yOffset));
+                elem.setAttribute("x2", "" + (i * (vertLength / amount) + vertOffset + xOffset));
+                elem.setAttribute("y2", "" + (193 + yOffset));
+                parent.appendChild(elem)
+            }
+        }
+        // vertical separator
+        {
+            let parent = document.getElementById("xsep");
+            for (let i = 1; i < amount + 1; i++) {
+                let elem = document.createElementNS(xmlns, "line");
+                elem.setAttribute("x1", "" + (i * (vertLength / amount) + vertOffset + xOffset));
+                elem.setAttribute("y1", "" + (1 + yOffset));
+                elem.setAttribute("x2", "" + (i * (vertLength / amount) + vertOffset + xOffset));
+                elem.setAttribute("y2", "" + (193 + yOffset));
+                parent.appendChild(elem)
+            }
+        }
+        {
+            for (var i = 0; i < amount + 1; i++) {
+                let parent = document.getElementById("bottomText");
+                let elem = document.createElementNS(xmlns, "text");
+                if (i % 5 == 0)
+                    elem.innerHTML = termine[i];
+                elem.setAttribute("x", "" + (i * (vertLength / amount) + xOffset));
+                elem.setAttribute("y", "" + (205 + yOffset));
+                elem.setAttribute("font-size", "8px");
+                elem.setAttribute("font-family", "Arial, Helvetica, sans-serif");
+                parent.appendChild(elem)
+            }
+        }
+    }
+    {
+        // horizontal separator
+        {
+            let parent = document.getElementById("yunitsep");
+            for (let i = 0; i < amount; i++) {
+                let elem = document.createElementNS(xmlns, "line");
+                elem.setAttribute("x1", "" + (8 + xOffset));
+                elem.setAttribute("y1", "" + (i * (horLength / amount) + horOffset + yOffset));
+                elem.setAttribute("x2", "" + (10 + xOffset));
+                elem.setAttribute("y2", "" + (i * (horLength / amount) + horOffset + yOffset));
+                parent.appendChild(elem);
+            }
+        }
+        // vertical separator
+        {
+            let parent = document.getElementById("ysep");
+            for (let i = 0; i < amount; i++) {
+                let elem = document.createElementNS(xmlns, "line");
+                elem.setAttribute("x1", "" + (10 + xOffset));
+                elem.setAttribute("y1", "" + (i * (horLength / amount) + horOffset + yOffset));
+                elem.setAttribute("x2", "" + (499 + xOffset));
+                elem.setAttribute("y2", "" + (i * (horLength / amount) + horOffset + yOffset));
+                parent.appendChild(elem);
+            }
+        }
+    }
+    {
+        let parent = document.getElementById("diasep");
+        let elem = document.createElementNS(xmlns, "polygon");
+        elem.setAttribute("points", "" + (11 + xOffset) + "," + (190 + yOffset) + " " + (499 + xOffset) + "," + (1 + yOffset) + " " + (499 + xOffset) + "," + (190 + yOffset));
+        parent.appendChild(elem);
+    }
+    {
+        /*
+        Fertig 2-3 tage (27.10 / 28.10)
+        Pong geplant 4-5 Tage (29.10 / 30.10)
+        Pong geplant 4-5 Tage (30.10 / 30.10)
+         */
+
+        drawDateLine([["1.10", "5.10"], ["5.10", "10.10"], ["7.10", "8.10"], ["16.10", "17.10"],["18.10", "21.10"], ["23.10", "23.10"]], "preparation");
+        drawDateLine([["1.10", "1.11"], ["25.10", "1.11"], ["26.10", "27.10"], ["27.10", "27.10"] ], "rollerball");
+        drawDateLine([["25.10", "8.11"], ["27.10", "8.11"], ["29.10", "3.11"],  ["30.10", "7.11"], ["1.11", "3.11"], ["3.11", "3.11"]], "max");
+        drawDateLine([["25.10", "6.11"], ["30.10", "6.11"], ["31.10", "6.11"],  ["5.11", "18.11"], ["8.11", "18.11"]], "dennis");
+        drawDateLine([["25.10", "28.10"], ["27.10", "28.10"], ["29.10", "30.10"], ["30.10", "30.10"]], "janik");
+        drawDateLine([["25.10", "31.10"], ["30.10", "31.10"], ["31.10", "1.11"], ["31.10", "1.11"], ["1.11", "2.11"], ["2.11", "2.11"]], "patric");
+
+        function drawDateLine(progression, milestone) {
+
+            //progression = [["1.10", "5.10"], ["5.10", "10.10"], ["7.10", "8.10"], ["16.10", "17.10"], ["17.10", "17.10"]];
+
+            let lastPos = null;
+            for (let i = 0; i < progression.length; i++) {
+                let xIndex = termine.indexOf(progression[i][0]);
+                let yIndex = termine.indexOf(progression[i][1]);
+                if (xIndex == -1 || yIndex == -1) {
+                    console.log("missing date");
+                    continue;
+                }
+
+                let x = xIndex * (vertLength / amount) + vertOffset + xOffset;
+                let y = horLength - yIndex * (horLength / amount) + 1 + yOffset;
+                let parent = document.getElementById(milestone);
+                let elem = document.createElementNS(xmlns, "circle");
+                elem.setAttribute("cx", x);
+                elem.setAttribute("cy", y);
+                elem.setAttribute("r", 2);
+                parent.appendChild(elem);
+
+                if (lastPos != null) {
+                    let elem = document.createElementNS(xmlns, "line");
+                    elem.setAttribute("x1", lastPos.x);
+                    elem.setAttribute("y1", lastPos.y);
+                    elem.setAttribute("x2", x);
+                    elem.setAttribute("y2", y);
+                    parent.appendChild(elem);
+                }
+
+                lastPos = {x: x, y: y};
+            }
+
+        }
+    }
+
+</script>
+
+</body>
+</html>
