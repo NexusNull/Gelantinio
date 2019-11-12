@@ -15,6 +15,7 @@ public class CellAgent : Agent
     public float growthSpeed;
 	private GameObject map;
     private MapManager mapManager;
+	int frames;
 
     // Start is called before the first frame update
     void Start() {
@@ -25,6 +26,7 @@ public class CellAgent : Agent
 		mapManager = GameObject.Find("Map").GetComponent<MapManager>();
         speed = startSpeed;
         PlayerCamera.orthographicSize = 10 * radius;
+		frames = 0;
     }
 
     // Update is called once per frame
@@ -42,7 +44,20 @@ public class CellAgent : Agent
             //Debug.Log(mousePosition);
             rBody.velocity = mousePosition * speed;
             //transform.position = transform.position + mousePosition * speed;
-        }		
+        }	
+		
+		// Starts at startSpeed and converges nicely and stricly monotoniously falling against convergeSpeed
+        speed = (startSpeed - convergeSpeed) * (0.05f * startRadius + 1) / (0.05f * radius + 1) + convergeSpeed;
+
+        // Sets world scale, according to radius of the cell
+        transform.localScale = new Vector3(radius * 2, radius * 2, 1f);
+        PlayerCamera.orthographicSize = 10 * radius;
+		
+		frames++;
+		if(frames == 256){
+			Done();
+			frames = 0;
+		}
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
@@ -61,7 +76,8 @@ public class CellAgent : Agent
             // transform.position = transform.position + controlSignal * speed;
          
         } else {
-			//...
+			Vector2 controlSignal = new Vector2(Mathf.Sin(vectorAction[0]*2*Mathf.PI), Mathf.Cos(vectorAction[0]*2*Mathf.PI));
+			rBody.AddForce(controlSignal);
 		}
 
     }
@@ -127,7 +143,11 @@ public class CellAgent : Agent
             int x = mapManager.xSize;
             int y = mapManager.ySize;
             collision.gameObject.GetComponent<Transform>().position = new Vector2(Random.Range(-(float)x / 2 + 1, (float)x / 2 - 1), Random.Range(-(float)y / 2 + 1, (float)y / 2 - 1));
-			SetReward(1.0f);
+			if(this.brain){
+				SetReward(1.0f);
+				Done();
+				radius = startRadius;
+			}
         }
 
     }
@@ -140,14 +160,6 @@ public class CellAgent : Agent
 	
 	// Grows so, that the total volume stays the same
 	void grow(float mass) {
-
 		radius = Mathf.Sqrt(mass*mass + radius*radius);
-
-        // Starts at startSpeed and converges nicely and stricly monotoniously falling against convergeSpeed
-        speed = (startSpeed - convergeSpeed) * (0.05f * startRadius + 1) / (0.05f * radius + 1) + convergeSpeed;
-
-        // Sets world scale, according to radius of the cell
-        transform.localScale = new Vector3(radius * 2, radius * 2, 1f);
-        PlayerCamera.orthographicSize = 10 * radius;
 	}
 }

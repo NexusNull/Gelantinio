@@ -472,6 +472,11 @@ PrefabInstance:
       propertyPath: convergeSpeed
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 6599273586833814418, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
+        type: 3}
+      propertyPath: agentParameters.numberOfActionsBetweenDecisions
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6599273586892904575, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
         type: 3}
       propertyPath: m_ClearFlags
