@@ -145,6 +145,8 @@ public class CellAgent : Agent
             int x = mapManager.xSize;
             int y = mapManager.ySize;
             collision.gameObject.GetComponent<Transform>().position = new Vector2(Random.Range(-(float)x / 2 + 1, (float)x / 2 - 1), Random.Range(-(float)y / 2 + 1, (float)y / 2 - 1));
+			
+			//Ends Training episode after eating food
 			if(this.brain){
 				SetReward(1.0f);
 				Done();
