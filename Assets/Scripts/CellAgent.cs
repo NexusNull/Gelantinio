@@ -8,8 +8,8 @@ public class CellAgent : Agent
 	public float startRadius;
     public float radius;
     Camera PlayerCamera;
-    public float maxSpeed;
-    public float minSpeed;
+    public float startSpeed;
+    public float convergeSpeed;
     private float speed;
     private Rigidbody2D rBody;
     public float growthSpeed;
@@ -27,17 +27,19 @@ public class CellAgent : Agent
 
     // Update is called once per frame
     void Update() {
-        //Sets Cell's size, speed and camera size according to it's radius
+        // Sets world scale, according to radius of the cell
         transform.localScale = new Vector3(radius * 2, radius * 2, 1f);
 
-        if(Mathf.Abs(radius - startRadius) >= 0.01f) {
-            // This expression is maxSpeed at startRadius and converges against maxSpeed - minSpeed 
-            // (need to be fixed, so it does converge agains minSpeed) with growing radius
-            speed = -(minSpeed * Mathf.Pow(radius - startRadius, 2f) / (Mathf.Pow(radius - startRadius, 2f) + 16*(radius - startRadius)) ) + maxSpeed;
-        } else {
-            // If radius == startRadius the expression is not defined, so we need to set it to maxSpeed manually then
-            speed = maxSpeed;
-        }
+        speed = (startSpeed - convergeSpeed) * (0.05f * startRadius + 1) / (0.05f * radius + 1) + convergeSpeed;
+
+        // if(Mathf.Abs(radius - startRadius) >= 0.01f) {
+        //     // This expression is startSpeed at startRadius and converges against startSpeed - convergeSpeed 
+        //     // (need to be fixed, so it does converge agains convergeSpeed) with growing radius
+        //     speed = -(convergeSpeed * Mathf.Pow(radius - startRadius, 2f) / (Mathf.Pow(radius - startRadius, 2f) + 16*(radius - startRadius)) ) + startSpeed;
+        // } else {
+        //     // If radius == startRadius the expression is not defined, so we need to set it to startSpeed manually then
+        //     speed = startSpeed;
+        // }
 
         PlayerCamera.orthographicSize = 10 * radius;
 
@@ -137,7 +139,7 @@ public class CellAgent : Agent
             int y = mapManager.ySize;
             collision.gameObject.GetComponent<Transform>().position = new Vector2(Random.Range(-(float)x / 2 + 1, (float)x / 2 - 1), Random.Range(-(float)y / 2 + 1, (float)y / 2 - 1));
         }
-            
+
     }
 
     // Work in progress, to be extended when adding other cells
