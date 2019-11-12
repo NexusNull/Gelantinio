@@ -53,7 +53,7 @@ public class CellAgent : Agent
             //Debug.Log(mousePosition);
             rBody.velocity = mousePosition * speed;
             //transform.position = transform.position + mousePosition * speed;
-        }
+        }		
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
@@ -80,7 +80,16 @@ public class CellAgent : Agent
 		AddVectorObs(radius);
 		Vector3 food = findClosestFood();
 		AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
-		RaycastHit Right;
+		//Distance to right wall
+		AddVectorObs((mapManager.xSize/2)-transform.position.x);
+		//Distance to left wall
+		AddVectorObs((mapManager.xSize/2)+transform.position.x);
+		//Distance to top wall
+		AddVectorObs((mapManager.ySize/2)-transform.position.y);
+		//Distance to bottom wall
+		AddVectorObs((mapManager.ySize/2)+transform.position.y);
+		
+		/*RaycastHit Right;
 		RaycastHit ForwardRight;
 		RaycastHit Forward;
 		RaycastHit ForwardLeft;
@@ -103,7 +112,7 @@ public class CellAgent : Agent
 		AddVectorObs(Left.distance);
 		AddVectorObs(BackwardLeft.distance);
 		AddVectorObs(Backward.distance);
-		AddVectorObs(BackwardRight.distance);
+		AddVectorObs(BackwardRight.distance);*/
 	}
 	
 	//Returns position of the closest 
