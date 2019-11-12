@@ -16,8 +16,6 @@ public class CellAgent : Agent
 	private GameObject map;
     private MapManager mapManager;
 	int frames;
-	int countUpdates;
-	int countAgentActions;
 
     // Start is called before the first frame update
     void Start() {
@@ -29,8 +27,6 @@ public class CellAgent : Agent
         speed = startSpeed;
         PlayerCamera.orthographicSize = 10 * radius;
 		frames = 0;
-		countUpdates = 0;
-		countAgentActions = 0;
     }
 
     // Update is called once per frame
@@ -56,12 +52,6 @@ public class CellAgent : Agent
         // Sets world scale, according to radius of the cell
         transform.localScale = new Vector3(radius * 2, radius * 2, 1f);
         PlayerCamera.orthographicSize = 10 * radius;
-		
-		frames++;
-		if(frames == 256){
-			Done();
-			frames = 0;
-		}
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
@@ -81,6 +71,15 @@ public class CellAgent : Agent
         } else {
 			Vector3 controlSignal = new Vector3(Mathf.Sin(vectorAction[0]*2*Mathf.PI), Mathf.Cos(vectorAction[0]*2*Mathf.PI), 0);
 			rBody.velocity = controlSignal * speed;
+		}
+		frames++;
+		if(frames == 256){
+			Done();
+			frames = 0;
+			radius = startRadius;
+			float x = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
+			float y = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
+			transform.position = new Vector3(x,y,0);
 		}
     }
 	
@@ -149,8 +148,6 @@ public class CellAgent : Agent
 			//Ends Training episode after eating food
 			if(this.brain){
 				SetReward(1.0f);
-				Done();
-				radius = startRadius;
 			}
         }
 
