@@ -16,6 +16,8 @@ public class CellAgent : Agent
 	private GameObject map;
     private MapManager mapManager;
 	int frames;
+	int countUpdates;
+	int countAgentActions;
 
     // Start is called before the first frame update
     void Start() {
@@ -27,6 +29,8 @@ public class CellAgent : Agent
         speed = startSpeed;
         PlayerCamera.orthographicSize = 10 * radius;
 		frames = 0;
+		countUpdates = 0;
+		countAgentActions = 0;
     }
 
     // Update is called once per frame
@@ -78,7 +82,6 @@ public class CellAgent : Agent
 			Vector3 controlSignal = new Vector3(Mathf.Sin(vectorAction[0]*2*Mathf.PI), Mathf.Cos(vectorAction[0]*2*Mathf.PI), 0);
 			rBody.velocity = controlSignal * speed;
 		}
-
     }
 	
 	//Input Vector for the ml-agents neural network
