@@ -60,7 +60,9 @@ public class CellAgent : Agent
             rBody.AddForce(controlSignal);
             // transform.position = transform.position + controlSignal * speed;
          
-        }
+        } else {
+			//...
+		}
 
     }
 	
@@ -125,6 +127,7 @@ public class CellAgent : Agent
             int x = mapManager.xSize;
             int y = mapManager.ySize;
             collision.gameObject.GetComponent<Transform>().position = new Vector2(Random.Range(-(float)x / 2 + 1, (float)x / 2 - 1), Random.Range(-(float)y / 2 + 1, (float)y / 2 - 1));
+			SetReward(1.0f);
         }
 
     }
