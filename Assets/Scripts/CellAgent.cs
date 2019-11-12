@@ -147,7 +147,7 @@ public class CellAgent : Agent
 			
 			//Ends Training episode after eating food
 			if(this.brain){
-				SetReward(1.0f);
+				AddReward(1.0f);
 			}
         }
 
