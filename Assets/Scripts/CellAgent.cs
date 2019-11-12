@@ -72,12 +72,11 @@ public class CellAgent : Agent
             if (controlSignal.magnitude > 1)
                 controlSignal.Normalize();
 
-            rBody.AddForce(controlSignal);
-            // transform.position = transform.position + controlSignal * speed;
+            rBody.velocity = controlSignal * speed;
          
         } else {
-			Vector2 controlSignal = new Vector2(Mathf.Sin(vectorAction[0]*2*Mathf.PI), Mathf.Cos(vectorAction[0]*2*Mathf.PI));
-			rBody.AddForce(controlSignal);
+			Vector3 controlSignal = new Vector3(Mathf.Sin(vectorAction[0]*2*Mathf.PI), Mathf.Cos(vectorAction[0]*2*Mathf.PI), 0);
+			rBody.velocity = controlSignal * speed;
 		}
 
     }
