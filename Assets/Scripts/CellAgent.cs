@@ -58,7 +58,7 @@ public class CellAgent : Agent
 				
         // If no brain exists the player may control the PlayerCell, otherwise the brain has the control
         if (this.brain.name == "CellPlayerBrain") {
-            
+            Debug.Log(vectorAction);
             // has brain -> brain controls
             Vector2 controlSignal = new Vector3(vectorAction[0],
                                                 vectorAction[1]);
@@ -69,58 +69,37 @@ public class CellAgent : Agent
             rBody.velocity = controlSignal * speed;
          
         } else {
-			Vector3 controlSignal = new Vector3(Mathf.Sin(vectorAction[0]*2*Mathf.PI), Mathf.Cos(vectorAction[0]*2*Mathf.PI), 0);
-			rBody.velocity = controlSignal * speed;
-		}
-		frames++;
-		if(frames == 256){
-			Done();
-			frames = 0;
-			radius = startRadius;
-			float x = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
-			float y = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
-			transform.position = new Vector3(x,y,0);
+			//Vector3 controlSignal = new Vector3(Mathf.Sin(vectorAction[0]*2*Mathf.PI), Mathf.Cos(vectorAction[1]*2*Mathf.PI), 0);
+            Vector2 controlSignal = new Vector3(vectorAction[0],
+                                    vectorAction[1]);
+            controlSignal.Normalize();
+            rBody.velocity = controlSignal * speed;
 		}
     }
-	
-	//Input Vector for the ml-agents neural network
-	public override void CollectObservations(){
+
+    public override void AgentReset()
+    {
+        base.AgentReset();
+        radius = startRadius;
+        float x = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
+		float y = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
+        transform.position = new Vector3(x,y,0);
+    }
+
+    //Input Vector for the ml-agents neural network
+    public override void CollectObservations(){
 		AddVectorObs(radius);
 		Vector3 food = findClosestFood();
 		AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
 		//Distance to right wall
-		AddVectorObs((mapManager.xSize/2)-transform.position.x);
+		AddVectorObs(Mathf.Clamp((mapManager.xSize/2)-transform.position.x,0,10));
 		//Distance to left wall
-		AddVectorObs((mapManager.xSize/2)+transform.position.x);
+		AddVectorObs(Mathf.Clamp((mapManager.xSize / 2) + transform.position.x, 0, 10));
 		//Distance to top wall
-		AddVectorObs((mapManager.ySize/2)-transform.position.y);
+		AddVectorObs(Mathf.Clamp((mapManager.ySize / 2) - transform.position.y, 0, 10));
 		//Distance to bottom wall
-		AddVectorObs((mapManager.ySize/2)+transform.position.y);
-		
-		/*RaycastHit Right;
-		RaycastHit ForwardRight;
-		RaycastHit Forward;
-		RaycastHit ForwardLeft;
-		RaycastHit Left;
-		RaycastHit BackwardLeft;
-		RaycastHit Backward;
-		RaycastHit BackwardRight;
-		Physics.Raycast(transform.position, new Vector3(1,0,0), out Right);
-		Physics.Raycast(transform.position, new Vector3(1,1,0), out ForwardRight);
-		Physics.Raycast(transform.position, new Vector3(0,1,0), out Forward);
-		Physics.Raycast(transform.position, new Vector3(-1,1,0), out ForwardLeft);
-		Physics.Raycast(transform.position, new Vector3(-1,0,0), out Left);
-		Physics.Raycast(transform.position, new Vector3(-1,-1,0), out BackwardLeft);
-		Physics.Raycast(transform.position, new Vector3(0,-1,0), out Backward);
-		Physics.Raycast(transform.position, new Vector3(1,-1,0), out BackwardRight);
-		AddVectorObs(Right.distance);
-		AddVectorObs(ForwardRight.distance);
-		AddVectorObs(Forward.distance);
-		AddVectorObs(ForwardLeft.distance);
-		AddVectorObs(Left.distance);
-		AddVectorObs(BackwardLeft.distance);
-		AddVectorObs(Backward.distance);
-		AddVectorObs(BackwardRight.distance);*/
+		AddVectorObs(Mathf.Clamp((mapManager.ySize / 2) + transform.position.y, 0, 10));
+
 	}
 	
 	//Returns position of the closest 

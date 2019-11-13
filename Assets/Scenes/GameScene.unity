@@ -239,7 +239,8 @@ MonoBehaviour:
     broadcastingBrains:
     - {fileID: 11400000, guid: 7a169d8fd50119243af5aeade4f87fde, type: 2}
     - {fileID: 11400000, guid: a707ebe3d01e96d478287182ed8f3d9c, type: 2}
-    m_BrainsToControl: []
+    m_BrainsToControl:
+    - {fileID: 11400000, guid: 7a169d8fd50119243af5aeade4f87fde, type: 2}
   m_TrainingConfiguration:
     width: 80
     height: 80
@@ -429,16 +430,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6599273586833814417, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6599273586833814417, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6599273586833814418, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
         type: 3}
       propertyPath: radius
@@ -467,12 +458,12 @@ PrefabInstance:
     - target: {fileID: 6599273586833814418, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
         type: 3}
       propertyPath: startSpeed
-      value: 9
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6599273586833814418, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
         type: 3}
       propertyPath: convergeSpeed
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6599273586833814418, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
         type: 3}
@@ -485,6 +476,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 7a169d8fd50119243af5aeade4f87fde,
         type: 2}
+    - target: {fileID: 6599273586833814418, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
+        type: 3}
+      propertyPath: agentParameters.maxStep
+      value: 1000
+      objectReference: {fileID: 0}
     - target: {fileID: 6599273586892904575, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
         type: 3}
       propertyPath: m_ClearFlags
@@ -503,11 +499,6 @@ PrefabInstance:
     - target: {fileID: 8850066533553868619, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
         type: 3}
       propertyPath: m_Constraints
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7576904705297404961, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
-        type: 3}
-      propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
