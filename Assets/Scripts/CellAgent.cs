@@ -32,6 +32,9 @@ public class CellAgent : Agent
     // Update is called once per frame
     void Update() {
 
+        Vector3 food = findClosestFood();
+        Debug.Log(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
+
         // has no brain -> player controls via mouse
         if (!this.brain) {
 
@@ -46,12 +49,6 @@ public class CellAgent : Agent
             //transform.position = transform.position + mousePosition * speed;
         }	
 		
-		// Starts at startSpeed and converges nicely and stricly monotoniously falling against convergeSpeed
-        speed = (startSpeed - convergeSpeed) * (0.05f * startRadius + 1) / (0.05f * radius + 1) + convergeSpeed;
-
-        // Sets world scale, according to radius of the cell
-        transform.localScale = new Vector3(radius * 2, radius * 2, 1f);
-        PlayerCamera.orthographicSize = 10 * radius;
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
@@ -80,7 +77,7 @@ public class CellAgent : Agent
     public override void AgentReset()
     {
         base.AgentReset();
-        radius = startRadius;
+        setRadius(startRadius);
         float x = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
 		float y = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
         transform.position = new Vector3(x,y,0);
@@ -88,17 +85,25 @@ public class CellAgent : Agent
 
     //Input Vector for the ml-agents neural network
     public override void CollectObservations(){
-		AddVectorObs(radius);
-		Vector3 food = findClosestFood();
+        AddVectorObs(radius);
+        Vector3 food = findClosestFood();
 		AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
-		//Distance to right wall
-		AddVectorObs(Mathf.Clamp((mapManager.xSize/2)-transform.position.x,0,10));
-		//Distance to left wall
-		AddVectorObs(Mathf.Clamp((mapManager.xSize / 2) + transform.position.x, 0, 10));
-		//Distance to top wall
-		AddVectorObs(Mathf.Clamp((mapManager.ySize / 2) - transform.position.y, 0, 10));
-		//Distance to bottom wall
-		AddVectorObs(Mathf.Clamp((mapManager.ySize / 2) + transform.position.y, 0, 10));
+        float distRight = Mathf.Clamp((mapManager.xSize/2)-transform.position.x,0,10);
+        float distLeft = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x, 0, 10);
+        float distTop = Mathf.Clamp((mapManager.ySize / 2) - transform.position.y, 0, 10);
+        float distBottom = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y, 0, 10);
+        if(this.brain.name == "CellLearningBrain2"){
+            //
+        } else if(this.brain.name == "CellLearningBrain"){
+            //Distance to right wall
+		    AddVectorObs(distRight);
+		    //Distance to left wall
+		    AddVectorObs(distLeft);
+		    //Distance to top wall
+		    AddVectorObs(distTop);
+		    //Distance to bottom wall
+		    AddVectorObs(distBottom);
+        }
 
 	}
 	
@@ -140,6 +145,16 @@ public class CellAgent : Agent
 	
 	// Grows so, that the total volume stays the same
 	void grow(float mass) {
-		radius = Mathf.Sqrt(mass*mass + radius*radius);
+		setRadius(Mathf.Sqrt(mass*mass + radius*radius));
 	}
+
+    void setRadius(float newRadius) {
+        radius = newRadius;
+        // Starts at startSpeed and converges nicely and stricly monotoniously falling against convergeSpeed
+        speed = (startSpeed - convergeSpeed) * (0.05f * startRadius + 1) / (0.05f * radius + 1) + convergeSpeed;
+
+        // Sets world scale, according to radius of the cell
+        transform.localScale = new Vector3(radius * 2, radius * 2, 1f);
+        PlayerCamera.orthographicSize = 10 * radius;
+    }
 }

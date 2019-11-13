@@ -239,8 +239,9 @@ MonoBehaviour:
     broadcastingBrains:
     - {fileID: 11400000, guid: 7a169d8fd50119243af5aeade4f87fde, type: 2}
     - {fileID: 11400000, guid: a707ebe3d01e96d478287182ed8f3d9c, type: 2}
+    - {fileID: 11400000, guid: 45dbe1bcf115eafbe84f43c61daedb72, type: 2}
     m_BrainsToControl:
-    - {fileID: 11400000, guid: 7a169d8fd50119243af5aeade4f87fde, type: 2}
+    - {fileID: 11400000, guid: 45dbe1bcf115eafbe84f43c61daedb72, type: 2}
   m_TrainingConfiguration:
     width: 80
     height: 80
@@ -474,8 +475,7 @@ PrefabInstance:
         type: 3}
       propertyPath: brain
       value: 
-      objectReference: {fileID: 11400000, guid: 7a169d8fd50119243af5aeade4f87fde,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 6599273586833814418, guid: 41e717bf7a6b9ad45b994d6cc7b41c42,
         type: 3}
       propertyPath: agentParameters.maxStep
