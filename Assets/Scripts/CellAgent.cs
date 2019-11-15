@@ -33,7 +33,7 @@ public class CellAgent : Agent
     void Update() {
 
         Vector3 food = findClosestFood();
-        Debug.Log(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
+        //Debug.Log(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
 
         // has no brain -> player controls via mouse
         if (!this.brain) {
@@ -87,15 +87,19 @@ public class CellAgent : Agent
     public override void CollectObservations(){
         AddVectorObs(radius);
         Vector3 food = findClosestFood();
-		AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
+		
+        Vector2 foodPos = new Vector2(food.x - transform.position.x, food.y - transform.position.y);
         float distRight = Mathf.Clamp((mapManager.xSize/2)-transform.position.x,0,10);
         float distLeft = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x, 0, 10);
         float distTop = Mathf.Clamp((mapManager.ySize / 2) - transform.position.y, 0, 10);
         float distBottom = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y, 0, 10);
+        
         if(this.brain.name == "CellLearningBrain2"){
-            //
+            Debug.Log("Food: [x:" + foodPos.x + ", y:" + foodPos.y + "] top:" + distTop + " right:" + distRight + " bottom:" + distBottom + " left:" + distLeft);
         } else if(this.brain.name == "CellLearningBrain"){
+            Debug.Log("Food: [x:" + foodPos.x + ", y:" + foodPos.y + "] top:" + distTop + " right:" + distRight + " bottom:" + distBottom + " left:" + distLeft);
             //Distance to right wall
+            
 		    AddVectorObs(distRight);
 		    //Distance to left wall
 		    AddVectorObs(distLeft);
@@ -103,6 +107,8 @@ public class CellAgent : Agent
 		    AddVectorObs(distTop);
 		    //Distance to bottom wall
 		    AddVectorObs(distBottom);
+            
+            AddVectorObs(foodPos);
         }
 
 	}
