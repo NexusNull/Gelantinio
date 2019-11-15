@@ -33,10 +33,10 @@ public class CellAgent : Agent
     void Update() {
 
         Vector3 food = findClosestFood();
-        Debug.Log(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
+        //Debug.Log(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
 
         // has no brain -> player controls via mouse
-        if (!this.brain) {
+        if (!this.brain && this.name == "PlayerCell(agent)") {
 
             Vector3 controlSignal = Vector3.zero;
             Vector3 mousePosition = PlayerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
@@ -55,7 +55,7 @@ public class CellAgent : Agent
 				
         // If no brain exists the player may control the PlayerCell, otherwise the brain has the control
         if (this.brain.name == "CellPlayerBrain") {
-            Debug.Log(vectorAction);
+            //Debug.Log(vectorAction);
             // has brain -> brain controls
             Vector2 controlSignal = new Vector3(vectorAction[0],
                                                 vectorAction[1]);
@@ -67,13 +67,12 @@ public class CellAgent : Agent
          
         } else {
 			//Vector3 controlSignal = new Vector3(Mathf.Sin(vectorAction[0]*2*Mathf.PI), Mathf.Cos(vectorAction[1]*2*Mathf.PI), 0);
-            Vector2 controlSignal = new Vector3(vectorAction[0],
+            Vector2 controlSignal = new Vector2(vectorAction[0],
                                     vectorAction[1]);
             controlSignal.Normalize();
             rBody.velocity = controlSignal * speed;
 		}
     }
-
     public override void AgentReset()
     {
         base.AgentReset();
@@ -85,10 +84,14 @@ public class CellAgent : Agent
 
     //Input Vector for the ml-agents neural network
     public override void CollectObservations(){
-        AddVectorObs(radius);
         Vector3 food = findClosestFood();
-		AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
-        float distRight = Mathf.Clamp((mapManager.xSize/2)-transform.position.x,0,10);
+        GameObject cell = findClosestCell();
+        //AddVectorObs(radius);
+        AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
+        AddVectorObs(new Vector2(cell.GetComponent<Transform>().position.x - transform.position.x, cell.GetComponent<Transform>().position.y - transform.position.y));
+        AddVectorObs(cell.GetComponent<CellAgent>().radius < radius);
+
+        /*float distRight = Mathf.Clamp((mapManager.xSize/2)-transform.position.x,0,10);
         float distLeft = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x, 0, 10);
         float distTop = Mathf.Clamp((mapManager.ySize / 2) - transform.position.y, 0, 10);
         float distBottom = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y, 0, 10);
@@ -103,12 +106,12 @@ public class CellAgent : Agent
 		    AddVectorObs(distTop);
 		    //Distance to bottom wall
 		    AddVectorObs(distBottom);
-        }
+        }*/
 
-	}
-	
-	//Returns position of the closest 
-	Vector3 findClosestFood() {
+    }
+
+    //Returns position of the closest 
+    Vector3 findClosestFood() {
 		GameObject[] allFood = GameObject.FindGameObjectsWithTag("Food");
 		float smallestDistance = Mathf.Infinity;
 		Vector3 closestPosition = Vector3.zero;
@@ -119,33 +122,65 @@ public class CellAgent : Agent
 				closestPosition = food.transform.position;
 			}
 		}
-		return closestPosition;
+        //Debug.Log(this.name + " - Closest Food: " + closestPosition);
+        return closestPosition;
 	}
-	
+
+    //Returns position of the closest  Cell
+    GameObject findClosestCell()
+    {
+        GameObject[] allCell = GameObject.FindGameObjectsWithTag("Cell");
+        float smallestDistance = Mathf.Infinity;
+        GameObject closest = this.gameObject;
+        foreach (GameObject cell in allCell)
+        {
+            float distance = Vector3.Distance(cell.transform.position, transform.position);
+            if (distance < smallestDistance && cell.name != this.name)
+            {
+                smallestDistance = distance;
+                closest = cell;
+            }
+        }
+        //Debug.Log(this.name + " : " + closest.name + " - " + closest.transform.position);
+        return closest;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.tag == "Food") {
             grow(growthSpeed);
             int x = mapManager.xSize;
             int y = mapManager.ySize;
             collision.gameObject.GetComponent<Transform>().position = new Vector2(Random.Range(-(float)x / 2 + 1, (float)x / 2 - 1), Random.Range(-(float)y / 2 + 1, (float)y / 2 - 1));
-			
-			//Ends Training episode after eating food
-			if(this.brain){
-				AddReward(1.0f);
-			}
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Cell")
+        {
+            if (collision.gameObject.GetComponent<CellAgent>().radius > radius)
+            {
+                AddReward(-10.0f);
+                AgentReset();
+            }
+            else if (collision.gameObject.GetComponent<CellAgent>().radius < radius)
+            {
+                swallow(collision.gameObject);
+            }
         }
 
     }
 
     // Work in progress, to be extended when adding other cells
-    public void swallow(/*smaller cell*/) {
-		float otherRadius = 0f; // Radius of the swallowed cell or growthSpeed if swallowing food.
-		grow(otherRadius);
+    public void swallow(GameObject otherCell) {
+        float size = otherCell.GetComponent<CellAgent>().radius;
+        grow(size);
 	}
 	
 	// Grows so, that the total volume stays the same
 	void grow(float mass) {
 		setRadius(Mathf.Sqrt(mass*mass + radius*radius));
+        AddReward(mass);
 	}
 
     void setRadius(float newRadius) {

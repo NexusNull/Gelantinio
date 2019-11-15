@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CellLearningBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 7
+    vectorObservationSize: 5
     numStackedVectorObservations: 1
     vectorActionSize: 02000000
     cameraResolutions: []
@@ -21,5 +21,5 @@ MonoBehaviour:
     - 
     - 
     vectorActionSpaceType: 1
-  model: {fileID: 0}
+  model: {fileID: 5022602860645237092, guid: 6b6e2aaefaef71f4090854805307ed47, type: 3}
   inferenceDevice: 0
