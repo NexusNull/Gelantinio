@@ -179,9 +179,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16231cbad32f1af4289c30b543f23106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxFood: 200
-  xSize: 100
-  ySize: 100
+  maxFood: 100
+  xSize: 40
+  ySize: 40
   backgroundPrefab: {fileID: 9123449858760895087, guid: 853334dd717206c4083f7f234058e889,
     type: 3}
   backgroundContainer: {fileID: 2032497879}
