@@ -42,17 +42,12 @@ public class CellAgent : Agent
             rBody.velocity = mousePosition * speed;
             //transform.position = transform.position + mousePosition * speed;
         }
-			
-		if((mapManager.xSize/2)+transform.position.x < radius*1.1){
-			Debug.Log((mapManager.xSize/2)+transform.position.x);
-		}
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
 				
         // If no brain exists the player may control the PlayerCell, otherwise the brain has the control
         if (this.brain.name == "CellPlayerBrain") {
-            //Debug.Log(vectorAction);
             // has brain -> brain controls
             Vector2 controlSignal = new Vector3(vectorAction[0],
                                                 vectorAction[1]);
@@ -92,7 +87,7 @@ public class CellAgent : Agent
 			//Additional Observations that are extreme when the agent is close to one of the wall.
 			//Close to left/right wall
 			float distX = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x, 0, radius * 1.125f) - Mathf.Clamp((mapManager.xSize / 2) - transform.position.x, 0, radius * 1.125f);
-					    //Close to top/bottom wall
+			//Close to top/bottom wall
 			float distY = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y, 0, radius * 1.125f) - Mathf.Clamp((mapManager.ySize / 2) - transform.position.y, 0, radius * 1.125f);
 		    AddVectorObs(new Vector2(distX, distY));
         }
@@ -111,7 +106,6 @@ public class CellAgent : Agent
 				closestPosition = food.transform.position;
 			}
 		}
-        //Debug.Log(this.name + " - Closest Food: " + closestPosition);
         return closestPosition;
 	}
 
@@ -130,7 +124,6 @@ public class CellAgent : Agent
                 closest = cell;
             }
         }
-        //Debug.Log(this.name + " : " + closest.name + " - " + closest.transform.position);
         return closest;
     }
 
