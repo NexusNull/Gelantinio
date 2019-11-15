@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CellPlayerBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 7
+    vectorObservationSize: 5
     numStackedVectorObservations: 1
     vectorActionSize: 01000000
     cameraResolutions: []

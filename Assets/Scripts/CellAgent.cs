@@ -15,7 +15,6 @@ public class CellAgent : Agent
     public float growthSpeed;
 	private GameObject map;
     private MapManager mapManager;
-	int frames;
 
     // Start is called before the first frame update
     void Start() {
@@ -26,15 +25,10 @@ public class CellAgent : Agent
 		mapManager = GameObject.Find("Map").GetComponent<MapManager>();
         speed = startSpeed;
         PlayerCamera.orthographicSize = 10 * radius;
-		frames = 0;
     }
 
     // Update is called once per frame
     void Update() {
-
-        Vector3 food = findClosestFood();
-        //Debug.Log(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
-
         // has no brain -> player controls via mouse
         if (!this.brain && this.name == "PlayerCell(agent)") {
 
@@ -47,8 +41,11 @@ public class CellAgent : Agent
             //Debug.Log(mousePosition);
             rBody.velocity = mousePosition * speed;
             //transform.position = transform.position + mousePosition * speed;
-        }	
-		
+        }
+			
+		if((mapManager.xSize/2)+transform.position.x < radius*1.1){
+			Debug.Log((mapManager.xSize/2)+transform.position.x);
+		}
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
@@ -86,27 +83,19 @@ public class CellAgent : Agent
     public override void CollectObservations(){
         Vector3 food = findClosestFood();
         GameObject cell = findClosestCell();
-        //AddVectorObs(radius);
-        AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
-        AddVectorObs(new Vector2(cell.GetComponent<Transform>().position.x - transform.position.x, cell.GetComponent<Transform>().position.y - transform.position.y));
-        AddVectorObs(cell.GetComponent<CellAgent>().radius < radius);
-
-        /*float distRight = Mathf.Clamp((mapManager.xSize/2)-transform.position.x,0,10);
-        float distLeft = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x, 0, 10);
-        float distTop = Mathf.Clamp((mapManager.ySize / 2) - transform.position.y, 0, 10);
-        float distBottom = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y, 0, 10);
-        if(this.brain.name == "CellLearningBrain2"){
-            //
-        } else if(this.brain.name == "CellLearningBrain"){
-            //Distance to right wall
-		    AddVectorObs(distRight);
-		    //Distance to left wall
-		    AddVectorObs(distLeft);
-		    //Distance to top wall
-		    AddVectorObs(distTop);
-		    //Distance to bottom wall
-		    AddVectorObs(distBottom);
-        }*/
+			AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
+			AddVectorObs(new Vector2(cell.GetComponent<Transform>().position.x - transform.position.x, cell.GetComponent<Transform>().position.y - transform.position.y));
+			AddVectorObs(cell.GetComponent<CellAgent>().radius < radius);
+		if(this.brain.name == "CellLearningBrain"){
+			//...
+        } else if(this.brain.name == "CellLearningBrain2"){
+			//Additional Observations that are extreme when the agent is close to one of the wall.
+			//Close to left/right wall
+			float distX = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x, 0, radius * 1.125f) - Mathf.Clamp((mapManager.xSize / 2) - transform.position.x, 0, radius * 1.125f);
+					    //Close to top/bottom wall
+			float distY = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y, 0, radius * 1.125f) - Mathf.Clamp((mapManager.ySize / 2) - transform.position.y, 0, radius * 1.125f);
+		    AddVectorObs(new Vector2(distX, distY));
+        }
 
     }
 
@@ -168,7 +157,6 @@ public class CellAgent : Agent
                 swallow(collision.gameObject);
             }
         }
-
     }
 
     // Work in progress, to be extended when adding other cells
@@ -193,3 +181,4 @@ public class CellAgent : Agent
         PlayerCamera.orthographicSize = 10 * radius;
     }
 }
+
