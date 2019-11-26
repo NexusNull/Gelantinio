@@ -30,7 +30,7 @@ public class CellAgent : Agent
     // Update is called once per frame
     void Update() {
         // has no brain -> player controls via mouse
-        if (!this.brain && this.name == "PlayerCell(agent)") {
+        if (!this.GetComponent<BehaviorParameters>() && this.name == "PlayerCell(agent)") {
 
             Vector3 controlSignal = Vector3.zero;
             Vector3 mousePosition = PlayerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
@@ -47,7 +47,7 @@ public class CellAgent : Agent
     public override void AgentAction(float[] vectorAction, string textAction) {
 				
         // If no brain exists the player may control the PlayerCell, otherwise the brain has the control
-        if (this.brain.name == "CellPlayerBrain") {
+        if (this.GetComponent<BehaviorParameters>().behaviorName == "PlayerBehavior") {
             // has brain -> brain controls
             Vector2 controlSignal = new Vector3(vectorAction[0],
                                                 vectorAction[1]);
@@ -81,9 +81,9 @@ public class CellAgent : Agent
 			AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
 			AddVectorObs(new Vector2(cell.GetComponent<Transform>().position.x - transform.position.x, cell.GetComponent<Transform>().position.y - transform.position.y));
 			AddVectorObs(cell.GetComponent<CellAgent>().radius < radius);
-		if(this.brain.name == "CellLearningBrain"){
+		if(this.GetComponent<BehaviorParameters>().behaviorName == "Behavior"){
 			//...
-        } else if(this.brain.name == "CellLearningBrain2"){
+        } else if(this.GetComponent<BehaviorParameters>().behaviorName == "Behavior2"){
 			//Additional Observations that are extreme when the agent is close to one of the wall.
 			//Close to left/right wall
 			float distX = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x, 0, radius * 1.125f) - Mathf.Clamp((mapManager.xSize / 2) - transform.position.x, 0, radius * 1.125f);

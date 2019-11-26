@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8461508834592565095}
   - component: {fileID: 8461508834592565094}
   - component: {fileID: 8461508834592565089}
+  - component: {fileID: -9098885182322289423}
   m_Layer: 0
   m_Name: PlayerCell(agent)
   m_TagString: Cell
@@ -96,10 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de005276ea9d01943bcb915c288e7a61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brain: {fileID: 11400000, guid: 4a81012abcd7b0146bda9efe4d7d6cb5, type: 2}
   agentParameters:
-    agentCameras: []
-    agentRenderTextures: []
     maxStep: 1000
     resetOnDone: 1
     onDemandDecision: 0
@@ -146,6 +144,28 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &-9098885182322289423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8461508834592565088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BrainParameters:
+    vectorObservationSize: 7
+    numStackedVectorObservations: 1
+    vectorActionSize: 02000000
+    vectorActionDescriptions: []
+    vectorActionSpaceType: 1
+  m_Model: {fileID: 5022602860645237092, guid: 7717a15ab0b6bc7458bb5aec2206506e, type: 3}
+  m_InferenceDevice: 0
+  m_UseHeuristic: 0
+  m_BehaviorName: Behavior2
 --- !u!1 &8461508835651347869
 GameObject:
   m_ObjectHideFlags: 0
