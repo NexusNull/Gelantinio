@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agentParameters:
-    maxStep: 1000
+    maxStep: 0
     resetOnDone: 1
     onDemandDecision: 0
     numberOfActionsBetweenDecisions: 10
@@ -162,7 +162,7 @@ MonoBehaviour:
     vectorActionSize: 02000000
     vectorActionDescriptions: []
     vectorActionSpaceType: 1
-  m_Model: {fileID: 5022602860645237092, guid: 7717a15ab0b6bc7458bb5aec2206506e, type: 3}
+  m_Model: {fileID: 0}
   m_InferenceDevice: 0
   m_UseHeuristic: 0
   m_BehaviorName: Behavior2

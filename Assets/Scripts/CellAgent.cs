@@ -29,41 +29,26 @@ public class CellAgent : Agent
 
     // Update is called once per frame
     void Update() {
-        // has no brain -> player controls via mouse
-        if (!this.GetComponent<BehaviorParameters>() && this.name == "PlayerCell(agent)") {
-
-            Vector3 controlSignal = Vector3.zero;
-            Vector3 mousePosition = PlayerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
-
-            mousePosition.z = 0f;
-            if (mousePosition.magnitude > 1)
-                mousePosition.Normalize();
-            //Debug.Log(mousePosition);
-            rBody.velocity = mousePosition * speed;
-            //transform.position = transform.position + mousePosition * speed;
-        }
+		//...
+    }
+	
+	public override float[] Heuristic()
+    {
+		Vector3 mousePosition = PlayerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
+        mousePosition.z = 0f;
+		if (mousePosition.magnitude > 1)
+            mousePosition.Normalize();
+        var action = new float[2];
+        action[0] = mousePosition[0];
+        action[1] = mousePosition[1];
+        return action;
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
-				
-        // If no brain exists the player may control the PlayerCell, otherwise the brain has the control
-        if (this.GetComponent<BehaviorParameters>().behaviorName == "PlayerBehavior") {
-            // has brain -> brain controls
-            Vector2 controlSignal = new Vector3(vectorAction[0],
-                                                vectorAction[1]);
-
-            if (controlSignal.magnitude > 1)
-                controlSignal.Normalize();
-
-            rBody.velocity = controlSignal * speed;
-         
-        } else {
-			//Vector3 controlSignal = new Vector3(Mathf.Sin(vectorAction[0]*2*Mathf.PI), Mathf.Cos(vectorAction[1]*2*Mathf.PI), 0);
-            Vector2 controlSignal = new Vector2(vectorAction[0],
-                                    vectorAction[1]);
-            controlSignal.Normalize();
-            rBody.velocity = controlSignal * speed;
-		}
+		Vector2 controlSignal = new Vector2(vectorAction[0], vectorAction[1]);
+		if (controlSignal.magnitude > 1)
+			controlSignal.Normalize();
+		rBody.velocity = controlSignal * speed;
     }
     public override void AgentReset()
     {
