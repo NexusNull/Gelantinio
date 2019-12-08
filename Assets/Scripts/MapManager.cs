@@ -23,12 +23,6 @@ public class MapManager : MonoBehaviour
 			spawnFood();
 		}
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 	
 	//Creates a food object and places it in a random position
     private void spawnFood()

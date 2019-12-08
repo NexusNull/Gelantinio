@@ -26,11 +26,6 @@ public class CellAgent : Agent
         speed = startSpeed;
         PlayerCamera.orthographicSize = 10 * radius;
     }
-
-    // Update is called once per frame
-    void Update() {
-		//...
-    }
 	
 	public override float[] Heuristic()
     {
