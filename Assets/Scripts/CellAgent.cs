@@ -66,9 +66,9 @@ public class CellAgent : Agent
         } else if(this.GetComponent<BehaviorParameters>().behaviorName == "Behavior2"){
 			//Additional Observations that are extreme when the agent is close to one of the wall.
 			//Close to left/right wall
-			float distX = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x + radius, 0, 1) - Mathf.Clamp((mapManager.xSize / 2) - transform.position.x - radius, 0, 1);
+			float distX = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x - radius, 0, 1) - Mathf.Clamp((mapManager.xSize / 2) - transform.position.x - radius, 0, 1);
 			//Close to top/bottom wall
-			float distY = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y + radius, 0, 1) - Mathf.Clamp((mapManager.ySize / 2) - transform.position.y - radius, 0, 1);
+			float distY = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y - radius, 0, 1) - Mathf.Clamp((mapManager.ySize / 2) - transform.position.y - radius, 0, 1);
 		    AddVectorObs(new Vector2(distX, distY));
         }
 
