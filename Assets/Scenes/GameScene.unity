@@ -179,7 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16231cbad32f1af4289c30b543f23106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxFood: 100
+  maxFood: 200
   xSize: 40
   ySize: 40
   backgroundPrefab: {fileID: 9123449858760895087, guid: 853334dd717206c4083f7f234058e889,
@@ -334,8 +334,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 9b418d4b884ca2a498227bb709dcd476,
-        type: 3}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41e717bf7a6b9ad45b994d6cc7b41c42, type: 3}
 --- !u!1 &1584344729
@@ -478,7 +477,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 9b418d4b884ca2a498227bb709dcd476,
+      objectReference: {fileID: 5022602860645237092, guid: 7717a15ab0b6bc7458bb5aec2206506e,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41e717bf7a6b9ad45b994d6cc7b41c42, type: 3}
@@ -583,7 +582,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 9b418d4b884ca2a498227bb709dcd476,
+      objectReference: {fileID: 5022602860645237092, guid: 7717a15ab0b6bc7458bb5aec2206506e,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41e717bf7a6b9ad45b994d6cc7b41c42, type: 3}
@@ -663,7 +662,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 9b418d4b884ca2a498227bb709dcd476,
+      objectReference: {fileID: 5022602860645237092, guid: 7717a15ab0b6bc7458bb5aec2206506e,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41e717bf7a6b9ad45b994d6cc7b41c42, type: 3}

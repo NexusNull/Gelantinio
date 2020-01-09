@@ -15,6 +15,7 @@ public class CellAgent : Agent
     public float growthSpeed;
 	private GameObject map;
     private MapManager mapManager;
+	private float WindowSize;
 
     // Start is called before the first frame update
     void Start() {
@@ -24,11 +25,15 @@ public class CellAgent : Agent
         radius = startRadius;
 		mapManager = GameObject.Find("Map").GetComponent<MapManager>();
         speed = startSpeed;
-        PlayerCamera.orthographicSize = 10 * radius;
+		WindowSize = 10 * radius;
+        PlayerCamera.orthographicSize = WindowSize;
     }
 	
 	public override float[] Heuristic()
     {
+		if(PlayerCamera.orthographicSize < WindowSize){
+			PlayerCamera.orthographicSize += 0.05f;
+		}
 		Vector3 mousePosition = PlayerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
         mousePosition.z = 0f;
 		if (mousePosition.magnitude > 1)
@@ -40,15 +45,20 @@ public class CellAgent : Agent
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
+		if(PlayerCamera.orthographicSize < WindowSize){
+			PlayerCamera.orthographicSize += 0.05f;
+		}
 		Vector2 controlSignal = new Vector2(vectorAction[0], vectorAction[1]);
 		if (controlSignal.magnitude > 1)
 			controlSignal.Normalize();
 		rBody.velocity = controlSignal * speed;
     }
+	
     public override void AgentReset()
     {
         base.AgentReset();
         setRadius(startRadius);
+		PlayerCamera.orthographicSize = WindowSize;
         float x = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
 		float y = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
         transform.position = new Vector3(x,y,0);
@@ -151,7 +161,7 @@ public class CellAgent : Agent
 
         // Sets world scale, according to radius of the cell
         transform.localScale = new Vector3(radius * 2, radius * 2, 1f);
-        PlayerCamera.orthographicSize = 10 * radius;
+		WindowSize = 10 * radius;
     }
 }
 
