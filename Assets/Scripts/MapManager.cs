@@ -5,12 +5,15 @@ using UnityEngine;
 public class MapManager : MonoBehaviour
 {
     [SerializeField] public int maxFood = 200;
+    [SerializeField] public int maxVirus = 5;
     [SerializeField] public int xSize = 200;
     [SerializeField] public int ySize = 200;
     [SerializeField] public GameObject backgroundPrefab = default;
     [SerializeField] public GameObject backgroundContainer = default;
 	[SerializeField] public GameObject foodPrefab = default;
+	[SerializeField] public GameObject virusPrefab = default;
 	[SerializeField] public GameObject foodContainer = default;	
+	[SerializeField] public GameObject virusContainer = default;	
     [SerializeField] public GameObject wall = default;
 	
     // Start is called before the first frame update
@@ -22,6 +25,10 @@ public class MapManager : MonoBehaviour
 		for(int i = 0; i < maxFood; i++){
 			spawnFood();
 		}
+        for (int i = 0; i < maxVirus; i++)
+        {
+            spawnVirus();
+        }
     }
 	
 	//Creates a food object and places it in a random position
@@ -33,6 +40,14 @@ public class MapManager : MonoBehaviour
 		foodPrefab.transform.position = new Vector3(x ,y ,0f);
     }
 
+    //Creates a food object and places it in a random position
+    private void spawnVirus()
+    {
+        float x = Random.Range(-1 * (float)xSize / 2 + 1, (float)xSize / 2 - 1);
+        float y = Random.Range(-1 * (float)ySize / 2 + 1, (float)ySize / 2 - 1);
+        Instantiate(virusPrefab, virusContainer.transform);
+        virusPrefab.transform.position = new Vector3(x, y, 0f);
+    }
     private void setupMapBackground()
     {
         Vector2 size = backgroundPrefab.GetComponent<SpriteRenderer>().size;
@@ -53,8 +68,6 @@ public class MapManager : MonoBehaviour
     private void setupMapBorder()
     {
         PolygonCollider2D collider = wall.GetComponent<PolygonCollider2D>();
-
-
 
         collider.SetPath(0, new Vector2[] {
             new Vector2(-(xSize / 2 + 1),  (ySize / 2 + 1)),

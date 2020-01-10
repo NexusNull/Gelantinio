@@ -15,7 +15,10 @@ public class CellAgent : Agent
     public float growthSpeed;
 	private GameObject map;
     private MapManager mapManager;
-	private float WindowSize;
+    private float boostTimer;
+    public float boostCooldown;
+    public float boostSpeed;
+	private float windowSize;
 
     // Start is called before the first frame update
     void Start() {
@@ -25,14 +28,19 @@ public class CellAgent : Agent
         radius = startRadius;
 		mapManager = GameObject.Find("Map").GetComponent<MapManager>();
         speed = startSpeed;
-		WindowSize = 10 * radius;
-        PlayerCamera.orthographicSize = WindowSize;
+		windowSize = 10 * radius;
+        PlayerCamera.orthographicSize = WindowSize(radius);
     }
-	
-	public override float[] Heuristic()
+    private float WindowSize(float cellsize)
     {
-		if(PlayerCamera.orthographicSize < WindowSize){
-			PlayerCamera.orthographicSize += 0.05f;
+          return (148.41f - Mathf.Pow(2.718f, -cellsize*0.01f+5))*2f+4;
+    }
+    public override float[] Heuristic()
+    {
+        Debug.Log(WindowSize(radius));
+		if(PlayerCamera.orthographicSize < WindowSize(radius))
+        {
+			PlayerCamera.orthographicSize += 0.01f;
 		}
 		Vector3 mousePosition = PlayerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
         mousePosition.z = 0f;
@@ -45,7 +53,8 @@ public class CellAgent : Agent
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
-		if(PlayerCamera.orthographicSize < WindowSize){
+		if(PlayerCamera.orthographicSize < windowSize)
+        {
 			PlayerCamera.orthographicSize += 0.05f;
 		}
 		Vector2 controlSignal = new Vector2(vectorAction[0], vectorAction[1]);
@@ -58,7 +67,7 @@ public class CellAgent : Agent
     {
         base.AgentReset();
         setRadius(startRadius);
-		PlayerCamera.orthographicSize = WindowSize;
+		PlayerCamera.orthographicSize = windowSize;
         float x = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
 		float y = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
         transform.position = new Vector3(x,y,0);
@@ -81,7 +90,6 @@ public class CellAgent : Agent
 			float distY = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y - radius, 0, 1) - Mathf.Clamp((mapManager.ySize / 2) - transform.position.y - radius, 0, 1);
 		    AddVectorObs(new Vector2(distX, distY));
         }
-
     }
 
     //Returns position of the closest 
@@ -103,6 +111,24 @@ public class CellAgent : Agent
     GameObject findClosestCell()
     {
         GameObject[] allCell = GameObject.FindGameObjectsWithTag("Cell");
+        float smallestDistance = Mathf.Infinity;
+        GameObject closest = this.gameObject;
+        foreach (GameObject cell in allCell)
+        {
+            float distance = Vector3.Distance(cell.transform.position, transform.position);
+            if (distance < smallestDistance && cell.name != this.name)
+            {
+                smallestDistance = distance;
+                closest = cell;
+            }
+        }
+        return closest;
+    }
+    
+    //Returns position of the closest  Cell
+    GameObject findClosestVirus()
+    {
+        GameObject[] allCell = GameObject.FindGameObjectsWithTag("Virus");
         float smallestDistance = Mathf.Infinity;
         GameObject closest = this.gameObject;
         foreach (GameObject cell in allCell)
@@ -139,7 +165,7 @@ public class CellAgent : Agent
             {
                 swallow(collision.gameObject);
             }
-        }
+        } 
     }
 
     // Work in progress, to be extended when adding other cells
@@ -154,6 +180,13 @@ public class CellAgent : Agent
         AddReward(mass);
 	}
 
+    void shrink(float mass)
+    {
+        mass = -mass;
+        setRadius(Mathf.Sqrt(mass * mass + radius * radius));
+        AddReward(-mass);
+    }
+
     void setRadius(float newRadius) {
         radius = newRadius;
         // Starts at startSpeed and converges nicely and stricly monotoniously falling against convergeSpeed
@@ -161,7 +194,16 @@ public class CellAgent : Agent
 
         // Sets world scale, according to radius of the cell
         transform.localScale = new Vector3(radius * 2, radius * 2, 1f);
-		WindowSize = 10 * radius;
+    }
+
+    private void boost()
+    {
+        if (boostTimer > boostCooldown)
+        {
+            boostTimer = 0;
+
+
+        }
     }
 }
 
