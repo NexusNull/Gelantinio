@@ -107,6 +107,8 @@ MonoBehaviour:
   startSpeed: 4
   convergeSpeed: 2
   growthSpeed: 0.1
+  boostCooldown: 0
+  boostSpeed: 0
 --- !u!50 &8461508834592565094
 Rigidbody2D:
   serializedVersion: 4
