@@ -83,20 +83,22 @@ public class CellAgent : Agent
     //Input Vector for the ml-agents neural network
     public override void CollectObservations(){
         Vector3 food = findClosestFood();
+		Vector3 virus = findClosestVirus();
         GameObject cell = findClosestCell();
-			AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
-			AddVectorObs(new Vector2(cell.GetComponent<Transform>().position.x - transform.position.x, cell.GetComponent<Transform>().position.y - transform.position.y));
-			AddVectorObs(cell.GetComponent<CellAgent>().radius < radius);
-		if(this.GetComponent<BehaviorParameters>().behaviorName == "Behavior"){
-			//...
-        } else if(this.GetComponent<BehaviorParameters>().behaviorName == "Behavior2"){
-			//Additional Observations that are extreme when the agent is close to one of the wall.
-			//Close to left/right wall
-			float distX = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x - radius, 0, 1) - Mathf.Clamp((mapManager.xSize / 2) - transform.position.x - radius, 0, 1);
-			//Close to top/bottom wall
-			float distY = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y - radius, 0, 1) - Mathf.Clamp((mapManager.ySize / 2) - transform.position.y - radius, 0, 1);
-		    AddVectorObs(new Vector2(distX, distY));
-        }
+		AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
+		AddVectorObs(new Vector2(virus.x - transform.position.x, virus.y - transform.position.y));
+		AddVectorObs(new Vector2(cell.GetComponent<Transform>().position.x - transform.position.x, cell.GetComponent<Transform>().position.y - transform.position.y));
+		AddVectorObs(new Vector2(cell.GetComponent<CellAgent>().radius, radius));
+			
+		//Additional Observations that are extreme when the agent is close to one of the wall.
+		//Close to left/right wall
+		float distX = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x - radius, 0, 1) - Mathf.Clamp((mapManager.xSize / 2) - transform.position.x - radius, 0, 1);
+		//Close to top/bottom wall
+		float distY = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y - radius, 0, 1) - Mathf.Clamp((mapManager.ySize / 2) - transform.position.y - radius, 0, 1);
+		AddVectorObs(new Vector2(distX, distY));
+        
+		
+		
     }
 
     //Returns position of the closest Food
@@ -104,7 +106,8 @@ public class CellAgent : Agent
 		GameObject[] allFood = GameObject.FindGameObjectsWithTag("Food");
 		float smallestDistance = Mathf.Infinity;
 		Vector3 closestPosition = Vector3.zero;
-		foreach (GameObject food in allFood){
+		foreach (GameObject food in allFood)
+		{
 			float distance = Vector3.Distance(food.transform.position, transform.position);
 			if(distance < smallestDistance){
 				smallestDistance = distance;
@@ -113,6 +116,24 @@ public class CellAgent : Agent
 		}
         return closestPosition;
 	}
+	
+	//Returns position of the closest Virus
+    Vector3 findClosestVirus()
+    {
+        GameObject[] allVirus = GameObject.FindGameObjectsWithTag("Virus");
+        float smallestDistance = Mathf.Infinity;
+        Vector3 closestPosition = Vector3.zero;
+        foreach (GameObject virus in allVirus)
+        {
+            float distance = Vector3.Distance(virus.transform.position, transform.position);
+            if (distance < smallestDistance)
+            {
+                smallestDistance = distance;
+                closestPosition = virus.transform.position;
+            }
+        }
+        return closestPosition;
+    }
 
     //Returns position of the closest Cell
     GameObject findClosestCell()
@@ -131,25 +152,7 @@ public class CellAgent : Agent
         }
         return closest;
     }
-    
-    //Returns position of the closest Virus
-    GameObject findClosestVirus()
-    {
-        GameObject[] allCell = GameObject.FindGameObjectsWithTag("Virus");
-        float smallestDistance = Mathf.Infinity;
-        GameObject closest = this.gameObject;
-        foreach (GameObject cell in allCell)
-        {
-            float distance = Vector3.Distance(cell.transform.position, transform.position);
-            if (distance < smallestDistance && cell.name != this.name)
-            {
-                smallestDistance = distance;
-                closest = cell;
-            }
-        }
-        return closest;
-    }
-
+   
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.tag == "Food") {
             grow(growthSpeed);
@@ -159,7 +162,7 @@ public class CellAgent : Agent
         }
 		else if (collision.gameObject.tag == "Virus" && radius > VirusRadius)
 		{
-			shrink((radius * radius) - (VirusRadius * VirusRadius));
+			shrink(Mathf.Sqrt(radius * radius - VirusRadius * VirusRadius));
 		}
     }
 
