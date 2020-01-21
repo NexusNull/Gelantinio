@@ -18,7 +18,9 @@ public class CellAgent : Agent
     private float boostTimer;
     public float boostCooldown;
     public float boostSpeed;
-	private float windowSize;
+    public Collider2D wallCollider;
+    public Collider2D triggerCollider;
+    private float windowSize;
 	private const float VirusRadius = 1.025f; //To be the correct virus radius
 
     // Start is called before the first frame update
@@ -31,8 +33,28 @@ public class CellAgent : Agent
         speed = startSpeed;
 		windowSize = WindowSize(radius);
         PlayerCamera.orthographicSize = WindowSize(radius);
+        GameObject[] otherCells = GameObject.FindGameObjectsWithTag("Cell");
+        Collider[] collider = this.transform.GetComponents<Collider>();
+        Debug.Log(wallCollider);
+        foreach (GameObject other in otherCells)
+        {
+
+            if(other != this)
+            {
+                Collider2D wallCollider = other.GetComponent<CellAgent>().wallCollider;
+                Debug.Log(wallCollider);
+                Physics2D.IgnoreCollision(this.wallCollider, wallCollider, true);
+            }
+        }
+
+
     }
-	
+
+    private void Update()
+    {
+        
+    }
+
     private float WindowSize(float cellsize)
     {
           return (148.41f - Mathf.Pow(2.718f, -cellsize*0.01f+5))*2f+4;
@@ -40,7 +62,7 @@ public class CellAgent : Agent
 	
     public override float[] Heuristic()
     {
-		if(Mathf.Round(PlayerCamera.orthographicSize * 100) < Mathf.Round(WindowSize(radius) * 100))
+        if (Mathf.Round(PlayerCamera.orthographicSize * 100) < Mathf.Round(WindowSize(radius) * 100))
         {
 			PlayerCamera.orthographicSize += 0.01f;
 		} else if (Mathf.Round(PlayerCamera.orthographicSize) > Mathf.Round(WindowSize(radius)))
@@ -58,12 +80,6 @@ public class CellAgent : Agent
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
-		if(Mathf.Round(PlayerCamera.orthographicSize) < Mathf.Round(WindowSize(radius)))
-        {
-			PlayerCamera.orthographicSize += 0.05f;
-		} else if(Mathf.Round(PlayerCamera.orthographicSize * 100) > Mathf.Round(WindowSize(radius) * 100)){
-			PlayerCamera.orthographicSize -= 0.05f;
-		}
 		Vector2 controlSignal = new Vector2(vectorAction[0], vectorAction[1]);
 		if (controlSignal.magnitude > 1)
 			controlSignal.Normalize();
@@ -96,9 +112,6 @@ public class CellAgent : Agent
 		//Close to top/bottom wall
 		float distY = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y - radius, 0, 1) - Mathf.Clamp((mapManager.ySize / 2) - transform.position.y - radius, 0, 1);
 		AddVectorObs(new Vector2(distX, distY));
-        
-		
-		
     }
 
     //Returns position of the closest Food
@@ -153,7 +166,9 @@ public class CellAgent : Agent
         return closest;
     }
    
-    private void OnTriggerEnter2D(Collider2D collision) {
+    private void OnTriggerStay2D(Collider2D collision) {
+        Debug.Log("OnTriggerEnter2D");
+        //Debug.Log(collision.gameObject.tag);
         if (collision.gameObject.tag == "Food") {
             grow(growthSpeed);
             int x = mapManager.xSize;
@@ -163,27 +178,40 @@ public class CellAgent : Agent
 		else if (collision.gameObject.tag == "Virus" && radius > VirusRadius)
 		{
 			shrink(Mathf.Sqrt(radius * radius - VirusRadius * VirusRadius));
-		}
+		} else if (collision.gameObject.tag == "Cell")
+        {
+            if (Vector3.Distance(collision.gameObject.transform.position, this.transform.position) < radius)
+            {
+                if (collision.gameObject.GetComponent<CellAgent>().radius > radius * 1.2f)
+                    {
+                        AddReward(-10.0f);
+                        AgentReset();
+                    }
+                    else if (collision.gameObject.GetComponent<CellAgent>().radius * 1.1f < radius)
+                    {
+                        swallow(collision.gameObject);
+                    }
+            }
+         
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Cell")
-        {
-            if (collision.gameObject.GetComponent<CellAgent>().radius > radius*1.1f)
-            {
-                AddReward(-10.0f);
-                AgentReset();
-            }
-            else if (collision.gameObject.GetComponent<CellAgent>().radius*1.1f < radius)
-            {
-                swallow(collision.gameObject);
-            }
-        }
+
     }
 
-    // ...
+    /**
+     *  Gets called when from the other cell when it is being swallowed
+     */
+    public void swallowed()
+    {
+        AddReward(-10.0f);
+        AgentReset();
+    }
     public void swallow(GameObject otherCell) {
+        CellAgent script = otherCell.GetComponent<CellAgent>();
+        script.swallowed();
         float size = otherCell.GetComponent<CellAgent>().radius;
         grow(size);
 	}

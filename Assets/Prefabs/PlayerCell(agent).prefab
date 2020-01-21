@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8461508834592565095}
   - component: {fileID: 8461508834592565094}
   - component: {fileID: 8461508834592565089}
+  - component: {fileID: 8042739897923389611}
   - component: {fileID: -9098885182322289423}
   m_Layer: 0
   m_Name: PlayerCell(agent)
@@ -99,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agentParameters:
     maxStep: 0
-    resetOnDone: 1
+    resetOnDone: 0
     onDemandDecision: 0
     numberOfActionsBetweenDecisions: 10
   startRadius: 0.5
@@ -109,6 +110,8 @@ MonoBehaviour:
   growthSpeed: 0.1
   boostCooldown: 0
   boostSpeed: 0
+  wallCollider: {fileID: 8461508834592565089}
+  triggerCollider: {fileID: 8042739897923389611}
 --- !u!50 &8461508834592565094
 Rigidbody2D:
   serializedVersion: 4
@@ -141,6 +144,22 @@ CircleCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
+--- !u!58 &8042739897923389611
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8461508834592565088}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
