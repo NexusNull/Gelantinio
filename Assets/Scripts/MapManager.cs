@@ -30,7 +30,6 @@ public class MapManager : MonoBehaviour
             spawnVirus();
         }
     }
-	
 	//Creates a food object and places it in a random position
     private void spawnFood()
     {
@@ -44,8 +43,9 @@ public class MapManager : MonoBehaviour
     {
         float x = Random.Range(-1 * (float)xSize / 2 + 1, (float)xSize / 2 - 1);
         float y = Random.Range(-1 * (float)ySize / 2 + 1, (float)ySize / 2 - 1);
-        Instantiate(virusPrefab, new Vector3(x, y, 0f),Quaternion.identity, virusContainer.transform);
+        Instantiate(virusPrefab, new Vector3(x, y, -0.01025f),Quaternion.identity, virusContainer.transform);
     }
+
     private void setupMapBackground()
     {
         Vector2 size = backgroundPrefab.GetComponent<SpriteRenderer>().size;

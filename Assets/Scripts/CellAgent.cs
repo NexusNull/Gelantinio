@@ -21,7 +21,6 @@ public class CellAgent : Agent
     public Collider2D wallCollider;
     public Collider2D triggerCollider;
     private float windowSize;
-	private const float VirusRadius = 1.025f; //To be the correct virus radius
 
     // Start is called before the first frame update
     void Start() {
@@ -52,7 +51,7 @@ public class CellAgent : Agent
 
     private void Update()
     {
-        
+        transform.position = new Vector3(transform.position.x, transform.position.y, -radius / 100);
     }
 
     private float WindowSize(float cellsize)
@@ -167,18 +166,22 @@ public class CellAgent : Agent
     }
    
     private void OnTriggerStay2D(Collider2D collision) {
-        Debug.Log("OnTriggerEnter2D");
-        //Debug.Log(collision.gameObject.tag);
         if (collision.gameObject.tag == "Food") {
             grow(growthSpeed);
             int x = mapManager.xSize;
             int y = mapManager.ySize;
             collision.gameObject.GetComponent<Transform>().position = new Vector2(Random.Range(-(float)x / 2 + 1, (float)x / 2 - 1), Random.Range(-(float)y / 2 + 1, (float)y / 2 - 1));
         }
-		else if (collision.gameObject.tag == "Virus" && radius > VirusRadius)
+		else if (collision.gameObject.tag == "Virus" &&  Vector3.Distance(collision.gameObject.transform.position, this.transform.position) < radius)
 		{
-			shrink(Mathf.Sqrt(radius * radius - VirusRadius * VirusRadius));
-		} else if (collision.gameObject.tag == "Cell")
+            CircleCollider2D collider = collision.gameObject.GetComponent<CircleCollider2D>();
+            if (collider.radius < radius)
+            {
+                shrink(Mathf.Sqrt(radius * radius/2));
+                Destroy(collision.gameObject);
+            }
+
+        } else if (collision.gameObject.tag == "Cell")
         {
             if (Vector3.Distance(collision.gameObject.transform.position, this.transform.position) < radius)
             {
