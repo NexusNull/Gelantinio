@@ -36,8 +36,7 @@ public class MapManager : MonoBehaviour
     {
 		float x = Random.Range(-1*(float)xSize/2 + 1, (float)xSize/2 - 1);
 		float y = Random.Range(-1*(float)ySize/2 + 1, (float)ySize/2 - 1);
-		Instantiate(foodPrefab, foodContainer.transform);
-		foodPrefab.transform.position = new Vector3(x ,y ,0f);
+		Instantiate(foodPrefab, new Vector3(x, y, 0f), Quaternion.identity, foodContainer.transform);
     }
 
     //Creates a food object and places it in a random position
@@ -45,8 +44,7 @@ public class MapManager : MonoBehaviour
     {
         float x = Random.Range(-1 * (float)xSize / 2 + 1, (float)xSize / 2 - 1);
         float y = Random.Range(-1 * (float)ySize / 2 + 1, (float)ySize / 2 - 1);
-        Instantiate(virusPrefab, virusContainer.transform);
-        virusPrefab.transform.position = new Vector3(x, y, 0f);
+        Instantiate(virusPrefab, new Vector3(x, y, 0f),Quaternion.identity, virusContainer.transform);
     }
     private void setupMapBackground()
     {
