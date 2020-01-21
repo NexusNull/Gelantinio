@@ -45,8 +45,6 @@ public class CellAgent : Agent
                 Physics2D.IgnoreCollision(this.wallCollider, wallCollider, true);
             }
         }
-
-
     }
 
     private void Update()
@@ -214,9 +212,9 @@ public class CellAgent : Agent
     }
     public void swallow(GameObject otherCell) {
         CellAgent script = otherCell.GetComponent<CellAgent>();
-        script.swallowed();
         float size = otherCell.GetComponent<CellAgent>().radius;
         grow(size);
+        script.swallowed();
 	}
 	
 	// Grows so, that the total volume stays the same

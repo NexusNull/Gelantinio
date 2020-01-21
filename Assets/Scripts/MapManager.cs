@@ -29,7 +29,41 @@ public class MapManager : MonoBehaviour
         {
             spawnVirus();
         }
+        InvokeRepeating("CheckRates", 2.0f, 0.3f);
     }
+
+    public void CheckRates()
+    {
+        if(foodContainer.transform.childCount > maxFood)
+        {
+            for(int i=0;i < foodContainer.transform.childCount - maxFood; i++)
+            {
+                Destroy(foodContainer.transform.GetChild(i).gameObject);
+            }
+        }
+        if (foodContainer.transform.childCount < maxFood)
+        {
+            for (int i = 0; i < maxFood- foodContainer.transform.childCount ; i++)
+            {
+                spawnFood();
+            }
+        }
+        if (virusContainer.transform.childCount > maxVirus)
+        {
+            for (int i = 0; i < virusContainer.transform.childCount - maxVirus; i++)
+            {
+                Destroy(virusContainer.transform.GetChild(i).gameObject);
+            }
+        }
+        if (virusContainer.transform.childCount < maxVirus)
+        {
+            for (int i = 0; i < maxVirus - virusContainer.transform.childCount; i++)
+            {
+                spawnVirus();
+            }
+        }
+    }
+
 	//Creates a food object and places it in a random position
     private void spawnFood()
     {
@@ -56,8 +90,8 @@ public class MapManager : MonoBehaviour
         {
             for (int j = 0; j < ySize / size.y + 1; j++)
             {
-                GameObject obj = Instantiate(backgroundPrefab, backgroundContainer.transform);
-                obj.transform.position = new Vector3(startpoint.x+size.x*i, startpoint.y + size.y * j, 0);
+                GameObject obj = Instantiate(backgroundPrefab, new Vector3(startpoint.x + size.x * i, startpoint.y + size.y * j, 0), Quaternion.identity, backgroundContainer.transform);
+
 
             }
         }
