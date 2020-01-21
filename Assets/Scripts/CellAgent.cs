@@ -178,7 +178,6 @@ public class CellAgent : Agent
                 shrink(Mathf.Sqrt(radius * radius/2));
                 Destroy(collision.gameObject);
             }
-
         } else if (collision.gameObject.tag == "Cell")
         {
             if (Vector3.Distance(collision.gameObject.transform.position, this.transform.position) < radius)
@@ -193,7 +192,6 @@ public class CellAgent : Agent
                         swallow(collision.gameObject);
                     }
             }
-         
         }
     }
 

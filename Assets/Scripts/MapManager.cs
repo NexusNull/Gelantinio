@@ -69,7 +69,9 @@ public class MapManager : MonoBehaviour
     {
 		float x = Random.Range(-1*(float)xSize/2 + 1, (float)xSize/2 - 1);
 		float y = Random.Range(-1*(float)ySize/2 + 1, (float)ySize/2 - 1);
-		Instantiate(foodPrefab, new Vector3(x, y, 0f), Quaternion.identity, foodContainer.transform);
+		GameObject obj = Instantiate(foodPrefab, new Vector3(x, y, 0f), Quaternion.identity, foodContainer.transform);
+        SpriteRenderer sprite = obj.GetComponent<SpriteRenderer>();
+        sprite.color =  Random.ColorHSV(.2f,.5f,1,1,1,1);
     }
 
     //Creates a food object and places it in a random position
