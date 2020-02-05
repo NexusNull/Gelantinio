@@ -96,12 +96,12 @@ public class CellAgent : Agent
     //Input Vector for the ml-agents neural network
     public override void CollectObservations(){
         Vector3 food = findClosestFood();
-		Vector3 virus = findClosestVirus();
+		GameObject virus = findClosestVirus();
         GameObject cell = findClosestCell();
 		AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
-		AddVectorObs(new Vector2(virus.x - transform.position.x, virus.y - transform.position.y));
+		AddVectorObs(new Vector2(virus.GetComponent<Transform>().position.x - transform.position.x, virus.GetComponent<Transform>().position.y - transform.position.y));
 		AddVectorObs(new Vector2(cell.GetComponent<Transform>().position.x - transform.position.x, cell.GetComponent<Transform>().position.y - transform.position.y));
-		AddVectorObs(new Vector2(cell.GetComponent<CellAgent>().radius, radius));
+		AddVectorObs(new Vector3(virus.GetComponent<CircleCollider2D>().radius, cell.GetComponent<CellAgent>().radius, radius));
 			
 		//Additional Observations that are extreme when the agent is close to one of the wall.
 		//Close to left/right wall
@@ -128,21 +128,21 @@ public class CellAgent : Agent
 	}
 	
 	//Returns position of the closest Virus
-    Vector3 findClosestVirus()
+    GameObject findClosestVirus()
     {
         GameObject[] allVirus = GameObject.FindGameObjectsWithTag("Virus");
         float smallestDistance = Mathf.Infinity;
-        Vector3 closestPosition = Vector3.zero;
+        GameObject closest = this.gameObject;
         foreach (GameObject virus in allVirus)
         {
             float distance = Vector3.Distance(virus.transform.position, transform.position);
             if (distance < smallestDistance)
             {
                 smallestDistance = distance;
-                closestPosition = virus.transform.position;
+                closest = virus;
             }
         }
-        return closestPosition;
+        return closest;
     }
 
     //Returns position of the closest Cell
