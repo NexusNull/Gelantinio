@@ -97,31 +97,7 @@ public class CellAgent : Agent
     //Input Vector for the ml-agents neural network
     public override void CollectObservations(){
         Vector3 food = findClosestFood();
-<<<<<<< HEAD
-		
-        Vector2 foodPos = new Vector2(food.x - transform.position.x, food.y - transform.position.y);
-        float distRight = Mathf.Clamp((mapManager.xSize/2)-transform.position.x,0,10);
-        float distLeft = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x, 0, 10);
-        float distTop = Mathf.Clamp((mapManager.ySize / 2) - transform.position.y, 0, 10);
-        float distBottom = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y, 0, 10);
-        
-        if(this.brain.name == "CellLearningBrain2"){
-            Debug.Log("Food: [x:" + foodPos.x + ", y:" + foodPos.y + "] top:" + distTop + " right:" + distRight + " bottom:" + distBottom + " left:" + distLeft);
-        } else if(this.brain.name == "CellLearningBrain"){
-            Debug.Log("Food: [x:" + foodPos.x + ", y:" + foodPos.y + "] top:" + distTop + " right:" + distRight + " bottom:" + distBottom + " left:" + distLeft);
-            //Distance to right wall
-            
-		    AddVectorObs(distRight);
-		    //Distance to left wall
-		    AddVectorObs(distLeft);
-		    //Distance to top wall
-		    AddVectorObs(distTop);
-		    //Distance to bottom wall
-		    AddVectorObs(distBottom);
-            
-            AddVectorObs(foodPos);
-        }
-=======
+
 		GameObject virus = findClosestVirus();
         GameObject cell = findClosestCell();
 		AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
@@ -136,7 +112,6 @@ public class CellAgent : Agent
 		float distY = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y - radius, 0, 1) - Mathf.Clamp((mapManager.ySize / 2) - transform.position.y - radius, 0, 1);
 		AddVectorObs(new Vector2(distX, distY));
     }
->>>>>>> 19930b583a8b364bd4d6a68f60fc8fd3e718dcfe
 
     //Returns position of the closest Food
     Vector3 findClosestFood() {
