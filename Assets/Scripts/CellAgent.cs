@@ -15,7 +15,12 @@ public class CellAgent : Agent
     public float growthSpeed;
 	private GameObject map;
     private MapManager mapManager;
-	int frames;
+    private float boostTimer;
+    public float boostCooldown;
+    public float boostSpeed;
+    public Collider2D wallCollider;
+    public Collider2D triggerCollider;
+    private float windowSize;
 
     // Start is called before the first frame update
     void Start() {
@@ -25,59 +30,65 @@ public class CellAgent : Agent
         radius = startRadius;
 		mapManager = GameObject.Find("Map").GetComponent<MapManager>();
         speed = startSpeed;
-        PlayerCamera.orthographicSize = 10 * radius;
-		frames = 0;
+		windowSize = WindowSize(radius);
+        PlayerCamera.orthographicSize = WindowSize(radius);
+        GameObject[] otherCells = GameObject.FindGameObjectsWithTag("Cell");
+        Collider[] collider = this.transform.GetComponents<Collider>();
+        Debug.Log(wallCollider);
+        foreach (GameObject other in otherCells)
+        {
+
+            if(other != this)
+            {
+                Collider2D wallCollider = other.GetComponent<CellAgent>().wallCollider;
+                Debug.Log(wallCollider);
+                Physics2D.IgnoreCollision(this.wallCollider, wallCollider, true);
+            }
+        }
     }
 
-    // Update is called once per frame
-    void Update() {
 
-        Vector3 food = findClosestFood();
-        //Debug.Log(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
+    private void Update()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y, -radius / 100);
+    }
 
-        // has no brain -> player controls via mouse
-        if (!this.brain) {
-
-            Vector3 controlSignal = Vector3.zero;
-            Vector3 mousePosition = PlayerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
-
-            mousePosition.z = 0f;
-            if (mousePosition.magnitude > 1)
-                mousePosition.Normalize();
-            //Debug.Log(mousePosition);
-            rBody.velocity = mousePosition * speed;
-            //transform.position = transform.position + mousePosition * speed;
-        }	
-		
+    private float WindowSize(float cellsize)
+    {
+          return (148.41f - Mathf.Pow(2.718f, -cellsize*0.01f+5))*2f+4;
+    }
+	
+    public override float[] Heuristic()
+    {
+        if (Mathf.Round(PlayerCamera.orthographicSize * 100) < Mathf.Round(WindowSize(radius) * 100))
+        {
+			PlayerCamera.orthographicSize += 0.01f;
+		} else if (Mathf.Round(PlayerCamera.orthographicSize) > Mathf.Round(WindowSize(radius)))
+		{
+			PlayerCamera.orthographicSize -= 0.01f;
+		}
+		Vector3 mousePosition = PlayerCamera.ScreenToWorldPoint(Input.mousePosition) - this.gameObject.transform.position;
+        mousePosition.z = 0f;
+		if (mousePosition.magnitude > 1)
+            mousePosition.Normalize();
+        var action = new float[2];
+        action[0] = mousePosition[0];
+        action[1] = mousePosition[1];
+        return action;
     }
 
     public override void AgentAction(float[] vectorAction, string textAction) {
-				
-        // If no brain exists the player may control the PlayerCell, otherwise the brain has the control
-        if (this.brain.name == "CellPlayerBrain") {
-            Debug.Log(vectorAction);
-            // has brain -> brain controls
-            Vector2 controlSignal = new Vector3(vectorAction[0],
-                                                vectorAction[1]);
-
-            if (controlSignal.magnitude > 1)
-                controlSignal.Normalize();
-
-            rBody.velocity = controlSignal * speed;
-         
-        } else {
-			//Vector3 controlSignal = new Vector3(Mathf.Sin(vectorAction[0]*2*Mathf.PI), Mathf.Cos(vectorAction[1]*2*Mathf.PI), 0);
-            Vector2 controlSignal = new Vector3(vectorAction[0],
-                                    vectorAction[1]);
-            controlSignal.Normalize();
-            rBody.velocity = controlSignal * speed;
-		}
+		Vector2 controlSignal = new Vector2(vectorAction[0], vectorAction[1]);
+		if (controlSignal.magnitude > 1)
+			controlSignal.Normalize();
+		rBody.velocity = controlSignal * speed;
     }
-
+	
     public override void AgentReset()
     {
         base.AgentReset();
         setRadius(startRadius);
+		PlayerCamera.orthographicSize = windowSize;
         float x = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
 		float y = Random.Range(-1*(float)mapManager.xSize/2 + 1, (float)mapManager.xSize/2 - 1);
         transform.position = new Vector3(x,y,0);
@@ -85,8 +96,8 @@ public class CellAgent : Agent
 
     //Input Vector for the ml-agents neural network
     public override void CollectObservations(){
-        AddVectorObs(radius);
         Vector3 food = findClosestFood();
+<<<<<<< HEAD
 		
         Vector2 foodPos = new Vector2(food.x - transform.position.x, food.y - transform.position.y);
         float distRight = Mathf.Clamp((mapManager.xSize/2)-transform.position.x,0,10);
@@ -110,49 +121,139 @@ public class CellAgent : Agent
             
             AddVectorObs(foodPos);
         }
+=======
+		GameObject virus = findClosestVirus();
+        GameObject cell = findClosestCell();
+		AddVectorObs(new Vector2(food.x - transform.position.x, food.y - transform.position.y));
+		AddVectorObs(new Vector2(virus.GetComponent<Transform>().position.x - transform.position.x, virus.GetComponent<Transform>().position.y - transform.position.y));
+		AddVectorObs(new Vector2(cell.GetComponent<Transform>().position.x - transform.position.x, cell.GetComponent<Transform>().position.y - transform.position.y));
+		AddVectorObs(new Vector3(virus.GetComponent<CircleCollider2D>().radius, cell.GetComponent<CellAgent>().radius, radius));
+			
+		//Additional Observations that are extreme when the agent is close to one of the wall.
+		//Close to left/right wall
+		float distX = Mathf.Clamp((mapManager.xSize / 2) + transform.position.x - radius, 0, 1) - Mathf.Clamp((mapManager.xSize / 2) - transform.position.x - radius, 0, 1);
+		//Close to top/bottom wall
+		float distY = Mathf.Clamp((mapManager.ySize / 2) + transform.position.y - radius, 0, 1) - Mathf.Clamp((mapManager.ySize / 2) - transform.position.y - radius, 0, 1);
+		AddVectorObs(new Vector2(distX, distY));
+    }
+>>>>>>> 19930b583a8b364bd4d6a68f60fc8fd3e718dcfe
 
-	}
-	
-	//Returns position of the closest 
-	Vector3 findClosestFood() {
+    //Returns position of the closest Food
+    Vector3 findClosestFood() {
 		GameObject[] allFood = GameObject.FindGameObjectsWithTag("Food");
 		float smallestDistance = Mathf.Infinity;
 		Vector3 closestPosition = Vector3.zero;
-		foreach (GameObject food in allFood){
+		foreach (GameObject food in allFood)
+		{
 			float distance = Vector3.Distance(food.transform.position, transform.position);
 			if(distance < smallestDistance){
 				smallestDistance = distance;
 				closestPosition = food.transform.position;
 			}
 		}
-		return closestPosition;
+        return closestPosition;
 	}
 	
-    private void OnTriggerEnter2D(Collider2D collision) {
+	//Returns position of the closest Virus
+    GameObject findClosestVirus()
+    {
+        GameObject[] allVirus = GameObject.FindGameObjectsWithTag("Virus");
+        float smallestDistance = Mathf.Infinity;
+        GameObject closest = this.gameObject;
+        foreach (GameObject virus in allVirus)
+        {
+            float distance = Vector3.Distance(virus.transform.position, transform.position);
+            if (distance < smallestDistance)
+            {
+                smallestDistance = distance;
+                closest = virus;
+            }
+        }
+        return closest;
+    }
+
+    //Returns position of the closest Cell
+    GameObject findClosestCell()
+    {
+        GameObject[] allCell = GameObject.FindGameObjectsWithTag("Cell");
+        float smallestDistance = Mathf.Infinity;
+        GameObject closest = this.gameObject;
+        foreach (GameObject cell in allCell)
+        {
+            float distance = Vector3.Distance(cell.transform.position, transform.position);
+            if (distance < smallestDistance && cell.name != this.name)
+            {
+                smallestDistance = distance;
+                closest = cell;
+            }
+        }
+        return closest;
+    }
+   
+    private void OnTriggerStay2D(Collider2D collision) {
         if (collision.gameObject.tag == "Food") {
             grow(growthSpeed);
             int x = mapManager.xSize;
             int y = mapManager.ySize;
             collision.gameObject.GetComponent<Transform>().position = new Vector2(Random.Range(-(float)x / 2 + 1, (float)x / 2 - 1), Random.Range(-(float)y / 2 + 1, (float)y / 2 - 1));
-			
-			//Ends Training episode after eating food
-			if(this.brain){
-				AddReward(1.0f);
-			}
         }
+		else if (collision.gameObject.tag == "Virus" &&  Vector3.Distance(collision.gameObject.transform.position, this.transform.position) < radius)
+		{
+            CircleCollider2D collider = collision.gameObject.GetComponent<CircleCollider2D>();
+            if (collider.radius < radius)
+            {
+                shrink(Mathf.Sqrt(radius * radius/2));
+                Destroy(collision.gameObject);
+            }
+        } else if (collision.gameObject.tag == "Cell")
+        {
+            if (Vector3.Distance(collision.gameObject.transform.position, this.transform.position) < radius)
+            {
+                if (collision.gameObject.GetComponent<CellAgent>().radius > radius * 1.2f)
+                    {
+                        AddReward(-10.0f);
+                        AgentReset();
+                    }
+                    else if (collision.gameObject.GetComponent<CellAgent>().radius * 1.1f < radius)
+                    {
+                        swallow(collision.gameObject);
+                    }
+            }
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
 
     }
 
-    // Work in progress, to be extended when adding other cells
-    public void swallow(/*smaller cell*/) {
-		float otherRadius = 0f; // Radius of the swallowed cell or growthSpeed if swallowing food.
-		grow(otherRadius);
+    /**
+     *  Gets called when from the other cell when it is being swallowed
+     */
+    public void swallowed()
+    {
+        AddReward(-10.0f);
+        AgentReset();
+    }
+    public void swallow(GameObject otherCell) {
+        CellAgent script = otherCell.GetComponent<CellAgent>();
+        float size = otherCell.GetComponent<CellAgent>().radius;
+        grow(size);
+        script.swallowed();
 	}
 	
 	// Grows so, that the total volume stays the same
 	void grow(float mass) {
-		setRadius(Mathf.Sqrt(mass*mass + radius*radius));
+		setRadius(Mathf.Sqrt(mass * mass + radius * radius));
+        AddReward(mass);
 	}
+
+	// Shrinks
+    void shrink(float mass)
+    {
+        setRadius(Mathf.Sqrt(radius * radius - mass * mass));
+        AddReward(-mass);
+    }
 
     void setRadius(float newRadius) {
         radius = newRadius;
@@ -161,6 +262,16 @@ public class CellAgent : Agent
 
         // Sets world scale, according to radius of the cell
         transform.localScale = new Vector3(radius * 2, radius * 2, 1f);
-        PlayerCamera.orthographicSize = 10 * radius;
+    }
+
+    private void boost()
+    {
+        if (boostTimer > boostCooldown)
+        {
+            boostTimer = 0;
+
+
+        }
     }
 }
+
